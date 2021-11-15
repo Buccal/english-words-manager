@@ -12,7 +12,7 @@
 <!--   <ol>
     <li v-for="(word, index) in wordsList" :key="index">{{word[0]}}：{{word[1]}}</li>
   </ol> -->
-  <WordList></WordList>
+  <WordList :data="wordsList"></WordList>
 </div>
 </template>
 
@@ -33,16 +33,43 @@ export default {
   },
   methods: {
     onSubmit() {
-      axios.post("http://127.0.0.1:8000/wordfrequency", {
-        context: this.form.context
-      }).then(res=>{
+      var res = {
+        status: 200,
+        data: [
+        {
+          "id": "c080f071662645aa86ee4f5ccfdd0fec",
+          "word": "my",
+          "frequency": 129
+        },
+        {
+          "id": "389dc497d5f14e11a1df3c317f15f68f",
+          "word": "mother",
+          "frequency": 10
+        },
+        {
+          "id": "7d58feb6e9004d02a00d406a86e42155",
+          "word": "drove",
+          "frequency": 2
+        },
+        {
+          "id": "3548670690ff471e977a771b122da6da",
+          "word": "me",
+          "frequency": 85
+        }]
+      }
+      // axios.post("http://127.0.0.1:8000/wordfrequency", {
+      //   context: this.form.context
+      // }).then(res=>{
           if(res.status === 200){
-            // this.wordsList = res.data.slice(0, 10);
             this.wordsList = res.data;
           }
-      })
+      // })
+    
     },
   },
+  created() {
+    this.onSubmit();
+  }
 }
 </script>
 
