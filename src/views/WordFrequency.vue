@@ -9,15 +9,20 @@
     </el-form-item>
   </el-form>
 
-  <ol>
+<!--   <ol>
     <li v-for="(word, index) in wordsList" :key="index">{{word[0]}}：{{word[1]}}</li>
-  </ol>
+  </ol> -->
+  <WordList></WordList>
 </div>
 </template>
 
 <script>
 import axios from 'axios';
+import WordList from "../components/WordList"
 export default {
+  components: {
+    WordList,
+  },
   data() {
     return {
       form: {
