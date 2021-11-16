@@ -20,13 +20,13 @@ export function login(data) {
   return request({
     url: '/user/login',
     method: 'post',
-    data: { username, password}
+    data: data
   })
 }
 
 // 注销
 // 参数：account、password、user_id
-export function remove(user_id) {
+export function delete_account(user_id) {
   return request({
     url: '/user/delete' + user_id,
     method: 'delete',

@@ -3,10 +3,9 @@ from config import *
 
 client = pymongo.MongoClient(MONGO_URL)
 db = client[MONGO_DB]
-tb = db["USER"]
-x = tb.insert_one({
-    "account": "admin",
-    "password": "admin123",
-})
-
-print(x.inserted_id)
+users = db["USER"]
+result = users.find_one({"account": "admin"})
+id = result["_id"]
+print(str(id))
+# print(new ObjectId().str)
+# print(type(id))

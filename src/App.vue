@@ -2,8 +2,11 @@
   <div id="nav">
     <router-link to="/">Home</router-link> |
     <router-link to="/frequency">Word Frequency</router-link>
+    <router-link to="/login">Login</router-link>
   </div>
-  <router-view/>
+  <div class="body">
+    <router-view/>
+  </div>
 </template>
 
 <style lang="scss">
@@ -26,5 +29,10 @@
       color: #42b983;
     }
   }
+}
+
+.body {
+  width: 65%;
+  margin: 0 auto;
 }
 </style>

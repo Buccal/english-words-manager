@@ -13,8 +13,10 @@ axios.defaults.baseURL = 'http://127.0.0.1:8000/';
 //设置默认的请求超时时间
 axios.defaults.timeout = 10000;
 
+const server = axios.create()
+
 // 请求拦截器
-axios.interceptors.request.use(
+server.interceptors.request.use(
 	config => {
 		// 获取token
 		let token = localStorage.getItem("header");
@@ -56,7 +58,7 @@ axios.interceptors.request.use(
 	});
 
 // 响应拦截器
-axios.interceptors.response.use(function(res) {
+server.interceptors.response.use(function(res) {
 	let rtn = res.data;
 
 	rtn.code = res.status;
@@ -78,7 +80,7 @@ axios.interceptors.response.use(function(res) {
 	} else if (rtn.code !== 200) {
 		return Promise.reject(new Error(rtn.msg))
 	}
-	return res
+	return rtn
 }, function(error) {
 	let { message } = error;
 	if (message == "Network Error") {
@@ -91,4 +93,4 @@ axios.interceptors.response.use(function(res) {
 	return Promise.reject(error)
 })
 
-export default axios.create()
+export default server
