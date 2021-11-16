@@ -5,20 +5,20 @@ import uuid
 import pymongo
 from config import *
 
-client = pymongo.MongoClient(MONGO_URL)
-db = client[MONGO_DB]
-tb = db["knownWords"]
-x = tb.insert_one({
-    "the": 1
-})
+# client = pymongo.MongoClient(MONGO_URL)
+# db = client[MONGO_DB]
+# tb = db["knownWords"]
+# x = tb.insert_one({
+#     "the": 1
+# })
 
 app = FastAPI()
 
-map = Code("function() { for (var key in this) { emit(key, null); } }")
-reduce = Code("function(key, stuff) { return null; }")
-known_words = db["knownWords"].map_reduce(map, reduce, "myresults").distinct('_id')
+# map = Code("function() { for (var key in this) { emit(key, null); } }")
+# reduce = Code("function(key, stuff) { return null; }")
+# known_words = db["knownWords"].map_reduce(map, reduce, "myresults").distinct('_id')
 
-print(known_words)
+# print(known_words)
 
 app.add_middleware(
     CORSMiddleware,
@@ -74,6 +74,32 @@ async def add_known_word(word: str):
         "msg": "添加熟词成功！"
     }
 
-# if __name__ == '__main__':
-#     import uvicorn
-#     uvicorn.run(app, host="127.0.0.1", port=8000)
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
+
+# class User(BaseModel):
+#     account: str
+#     password: str
+
+# # 添加用户
+# @app.post("/user/register")
+# async def register(arg: register):
+#     tb = db["USER"]
+#     x = tb.insert_one({
+#         "account": arg.account,
+#         "password": arg.password,
+#     })
+#     return x.inserted_id
+
+# # 删除用户
+# @app.delete("/user/{user_id}")
+# async def delete_user(arg: register):
+#     tb = db["USER"]
+#     x = tb.insert_one({
+#         "account": arg.account,
+#         "password": arg.password,
+#     })
+#     return x.inserted_id
+
+# # 更新用户
