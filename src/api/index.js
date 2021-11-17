@@ -38,18 +38,26 @@ export function delete_account(user_id) {
 export function close(user_id) {
   return request({
     url: '/user/close' + user_id,
-    method: 'put',
+    method: 'post',
   })
 }
 
+// 词频计算
+export function wordfrequency(data) {
+  return request({
+    url: '/wordfrequency',
+    method: 'post',
+    data: data
+  })
+}
 
 // 词语管理
 
 // 添加熟词
 export function add(data) {
   return request({
-    url: '/word/add',
-    method: 'put',
+    url: '/known_word/add',
+    method: 'post',
     data: data,
   })
 }
@@ -76,7 +84,7 @@ export function getwords(user_id) {
 export function create(data) {
   return request({
     url: '/book/create',
-    method: 'put',
+    method: 'post',
     data: data,
   })
 }
