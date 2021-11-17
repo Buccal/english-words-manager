@@ -10,7 +10,7 @@
         <el-button size="small" @click="setAllKnown">全部设为熟词</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="tableData" :default-sort="{prop: 'frequency', order: 'descending'}" border stripe height="250">
+    <el-table :data="showData" :default-sort="{prop: 'frequency', order: 'descending'}" border stripe height="250">
       <el-table-column label="序号">
         <template v-slot="scope">
           {{scope.$index+1}}
@@ -38,10 +38,10 @@
       v-model:currentPage="currentPage"
       :page-size="100"
       layout="prev, pager, next, jumper"
-      :total="1000"
-      @size-change="handleSizeChange"
+      :total="total"
       @current-change="handleCurrentChange"
     >
+    </el-pagination>
   </div>
 </template>
 
@@ -54,10 +54,16 @@ export default {
   data(){
     return {
       tableData: [],
+      showData: [],
       form: {
         search: "",
       },
-      currentPage: ref(5)
+      currentPage: 1
+    }
+  },
+  computed:{
+    total() {
+      return this.tableData.length
     }
   },
   methods: {
@@ -84,15 +90,32 @@ export default {
       })
     },
     search() {
-
+      if(!this.search){
+        alert("请输入单词进行搜索");
+        return;
+      }
+      let self = this;
+      this.showData = this.tableData.filter(item => item.word.indexOf(self.search) !== -1);
     },
     setAllKnown(){
-
-    }
+      this.showData.map(item=>{
+        item.newFlag = false;
+        return item;
+      })
+    },
+    handleCurrentChange() {
+      this.showData = this.tableData.slice(100*(this.currentPage-1), 100*this.currentPage);
+    },
+    init(){
+      this.tableData = JSON.parse(JSON.stringify(this.data));
+      this.showData = this.tableData.slice(0, 100);
+      this.form.search = "";
+      this.currentPage = 1;
+    },
   },
   watch: {
     data(){
-      this.tableData = JSON.parse(JSON.stringify(this.data))
+      this.init();
     }
   }
 }
