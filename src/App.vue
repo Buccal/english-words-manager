@@ -2,6 +2,7 @@
   <div id="nav">
     <router-link to="/">Home</router-link> |
     <router-link to="/frequency">Word Frequency</router-link>
+    <router-link to="/knownWordsManager">Known Words Manager</router-link>
     <router-link to="/login">Login</router-link>
   </div>
   <div class="body">

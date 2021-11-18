@@ -24,7 +24,7 @@ export function login(data) {
   })
 }
 
-// 注销
+// 注销（todo）
 // 参数：account、password、user_id
 export function delete_account(user_id) {
   return request({
@@ -33,12 +33,23 @@ export function delete_account(user_id) {
   })
 }
 
-// 关闭
+// 关闭（todo）
 // 参数：account、password、user_id
-export function close(user_id) {
+export function close(data) {
   return request({
-    url: '/user/close' + user_id,
+    url: '/user/close',
     method: 'post',
+    data: data
+  })
+}
+
+// 清空重置（todo）
+// 参数：account、password、user_id
+export function reset(data) {
+  return request({
+    url: '/user/reset',
+    method: 'post',
+    data: data
   })
 }
 
@@ -62,7 +73,15 @@ export function add(data) {
   })
 }
 
-// 移除熟词
+// 获取熟词列表
+export function getKnownWords(user_id) {
+  return request({
+    url: '/known_word/list/' + user_id,
+    method: 'get',
+  })
+}
+
+// 移除熟词（todo）
 export function remove(data) {
   return request({
     url: '/word/remove',
@@ -71,15 +90,7 @@ export function remove(data) {
   })
 }
 
-// 获取熟词列表
-export function getwords(user_id) {
-  return request({
-    url: '/word/list' + user_id,
-    method: 'get',
-  })
-}
-
-// 将生词保存为单词本
+// 将生词保存为单词本（todo）
 // 参数：用户id、单词本名称、单词列表、来源文本（可选项）
 export function create(data) {
   return request({
@@ -89,7 +100,7 @@ export function create(data) {
   })
 }
 
-// 获取所有单词本
+// 获取所有单词本（todo）
 // 参数：用户id
 export function getBooks(user_id) {
   return request({

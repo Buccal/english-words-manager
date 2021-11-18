@@ -131,6 +131,32 @@ async def add_known_word(data: Words):
         "msg": "添加熟词成功！"
     }
 
+# 获取熟词
+@app.get("/known_word/list/{user_id}")
+async def get_known_words(user_id: str):
+    known_words = db["KNOWN_WORDS"]
+    result = known_words.find_one({"user_id": user_id})
+    if(result == None):
+        return {
+            "msg": "用户不存在"
+        }
+    return {
+        "data": result["words"]
+    }
+
+# 获取模板词库
+@app.get("/template_word/list/{type}")
+async def get_known_words(type: str):
+    template_words = db["TEMPLATE_WORDS"]
+    result = template_words.find_one({"level": type})
+    if(result == None):
+        return {
+            "msg": "用户不存在"
+        }
+    return {
+        "data": result["words"]
+    }
+
 # @app.get("/")
 # async def main():
 #     return {"message": "Hello , this is FastAPI."}

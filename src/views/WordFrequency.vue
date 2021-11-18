@@ -9,7 +9,7 @@
     </el-form-item>
   </el-form>
 
-  <WordList :data="wordsList"></WordList>
+  <WordList :data="wordsList" :showFrequency="true"></WordList>
 </div>
 </template>
 
