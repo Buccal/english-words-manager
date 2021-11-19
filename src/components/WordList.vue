@@ -4,15 +4,15 @@
       <el-form-item prop="search">
         <el-input v-model="form.search" size="small" placeholder="搜索单词" @keyup.enter.native="search" clearable/>
       </el-form-item>
-      <el-form-item v-if="showFrequency">
+      <el-form-item v-if="props.showFrequency">
         <el-button size="small"><el-icon class="el-icon--left"><Collection /></el-icon>保存到生词本</el-button>
         <el-button size="small" @click="saveKnownWords"><el-icon class="el-icon--left"><Plus /></el-icon>添加到熟词库</el-button>
         <el-button size="small" @click="setAllKnown"><el-icon class="el-icon--left"><TurnOff /></el-icon>全部设为熟词</el-button>
       </el-form-item>
-      <el-form-item v-if="!showFrequency">
+      <el-form-item v-if="!props.showFrequency">
         <el-button size="small" @click="updateKnownWords">保存修改</el-button>
         <el-dropdown @command="handleCommand">
-            <el-button type="small">
+            <el-button size="small">
               导入<el-icon class="el-icon--right"><ArrowDown /></el-icon>
             </el-button>
             <template #dropdown>
@@ -38,7 +38,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="word" label="单词" sortable></el-table-column>
-      <el-table-column prop="frequency" label="词频" v-if="showFrequency" sortable></el-table-column>
+      <el-table-column prop="frequency" label="词频" v-if="props.showFrequency" sortable></el-table-column>
       <el-table-column label="是否为生词" prop="newFlag" :filters="[
           { text: '生词', value: true },
           { text: '熟词', value: false },
@@ -66,97 +66,93 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue'
+<script setup>
+import { ref, reactive, defineProps, computed, watch } from "vue";
 import { add } from "@/api/index"
 import { Collection, Plus, TurnOff, ArrowDown } from '@element-plus/icons'
-export default {
-  name: "WordList",
-  props: ["data", "showFrequency"],
-  components: {
-    Collection,
-    Plus,
-    TurnOff,
-    ArrowDown,
-  },
-  data(){
-    return {
-      tableData: [],
-      showData: [],
-      form: {
-        search: "",
-      },
-      currentPage: 1
-    }
-  },
-  computed:{
-    total() {
-      return this.tableData.length
-    }
-  },
-  methods: {
-    filterNew(value, row) {
-      return row.newFlag === value
-    },
-    saveKnownWords() {
-      let words = this.tableData.map(item => {
-        if(!item.newFlag){
-          return item.word
-        }
-      });
-      if(!words.length){
-        alert("请设置熟词")
-        return
-      }
-      add({
-        user_id: localStorage.getItem("user_id"),
-        words: words
-      }).then(res => {
-        if(res.code === 200){
 
-        }
-      })
-    },
-    search() {
-      if(!this.search){
-        alert("请输入单词进行搜索");
-        return;
-      }
-      let self = this;
-      this.showData = this.tableData.filter(item => item.word.indexOf(self.search) !== -1);
-    },
-    setAllKnown(){
-      this.showData.map(item=>{
-        item.newFlag = false;
-        return item;
-      })
-    },
-    handleCurrentChange() {
-      this.showData = this.tableData.slice(100*(this.currentPage-1), 100*this.currentPage);
-    },
-    updateKnownWords() {
+const props = defineProps({
+  data: Array,
+  showFrequency: Boolean
+})
 
-    },
-    handleCommand(command){
-      if(command === "primary" || command === "middle" || command === "high"){
+const currentPage = ref(1);
 
-      }else{
-        alert("暂不支持")
-      }
-    },
-    init(){
-      this.tableData = JSON.parse(JSON.stringify(this.data));
-      this.showData = this.tableData.slice(0, 100);
-      this.form.search = "";
-      this.currentPage = 1;
-    },
-  },
-  watch: {
-    data(){
-      this.init();
+const tableData = reactive([]);
+const showData = reactive([]);
+const form = reactive({
+  search: "",
+});
+
+const total = computed(() => {
+  return tableData.length;
+});
+
+const filterNew = (value, row) => {
+  return row.newFlag === value
+};
+
+const saveKnownWords = () => {
+  let words = tableData.map(item => {
+    if(!item.newFlag){
+      return item.word
     }
+  });
+  if(!words.length){
+    alert("请设置熟词")
+    return
   }
+  add({
+    user_id: localStorage.getItem("user_id"),
+    words: words
+  }).then(res => {
+    if(res.code === 200){
+
+    }
+  })
+};
+
+const search = () => {
+  if(!search){
+    alert("请输入单词进行搜索");
+    return;
+  }
+  showData = tableData.filter(item => item.word.indexOf(search) !== -1);
+};
+
+const setAllKnown = () => {
+  showData.map(item=>{
+    item.newFlag = false;
+    return item;
+  })
+};
+
+const handleCurrentChange = () => {
+  showData = tableData.slice(100*(currentPage-1), 100*currentPage);
 }
+
+const updateKnownWords = () => {
+
+};
+
+const handleCommand = (command) => {
+  if(command === "primary" || command === "middle" || command === "high"){
+
+  }else{
+    alert("暂不支持")
+  }
+};
+
+const init = () => {
+  tableData = JSON.parse(JSON.stringify(props.data));
+  showData = tableData.slice(0, 100);
+  form.search = "";
+  currentPage = 1;
+};
+
+watch(() => props.data, () => {
+  init();
+});
 </script>
 
 <style lang="scss" scoped>

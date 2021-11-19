@@ -93,3 +93,15 @@ vue3
 	熟词管理页
 	生词本管理页
 	设置页
+
+
+
+报错
+- 
+登陆注册页，点击输入框，报错runtime-core.esm-bundler.js?5c40:6584
+[Vue warn]: Invalid event arguments: event validation failed for event "keydown".
+
+
+
+
+[vue3语法参考](https://juejin.cn/post/7031086963214483492)

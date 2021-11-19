@@ -13,43 +13,33 @@
 </div>
 </template>
 
-<script>
+<script setup>
+import { reactive } from "vue";
 import WordList from "../components/WordList"
 import { wordfrequency } from "@/api/index"
-export default {
-  components: {
-    WordList,
-  },
-  data() {
-    return {
-      form: {
-        context: "",
-      },
-      wordsList: [],
-    }
-  },
-  methods: {
-    onSubmit() {
-      if(!this.form.context){
-        alert("请输入内容")
-        return
-      }
-      let self = this;
-      wordfrequency({
-        user_id: localStorage.getItem("user_id"),
-        context: this.form.context
-      }).then(res => {
-        if(res.code === 200){
-          self.wordsList = res.data.map(item=>{
-            item.newFlag = true;
-            return item;
-          });
-        }
-      })
-    },
-  },
-  created() {
+
+const form = reactive({
+  context: "",
+})
+
+const wordsList = reactive([]);
+
+const onSubmit = () => {
+  if(!form.context){
+    alert("请输入内容")
+    return
   }
+  wordfrequency({
+    user_id: localStorage.getItem("user_id"),
+    context: form.context
+  }).then(res => {
+    if(res.code === 200){
+      wordsList = res.data.map(item=>{
+        item.newFlag = true;
+        return item;
+      });
+    }
+  })
 }
 </script>
 
