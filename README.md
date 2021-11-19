@@ -105,3 +105,10 @@ vue3
 
 
 [vue3语法参考](https://juejin.cn/post/7031086963214483492)
+
+
+文本域无法输入是因为表单的ref和v-model一致
+
+ref定义的变量，要使用.value改变值
+reactive定义的变量，集中包装到一个对象里，对象.变量改变值
+用let定义的变量，重新赋值会覆盖ref和reactive

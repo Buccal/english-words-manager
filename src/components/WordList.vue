@@ -2,7 +2,7 @@
   <div id="word-list">
     <el-form :model="form" :inline="true" label-width="68px">
       <el-form-item prop="search">
-        <el-input v-model="form.search" size="small" placeholder="搜索单词" @keyup.enter.native="search" clearable/>
+        <el-input v-model="form.search" size="small" placeholder="搜索单词" @keyup.enter="search" clearable/>
       </el-form-item>
       <el-form-item v-if="props.showFrequency">
         <el-button size="small"><el-icon class="el-icon--left"><Collection /></el-icon>保存到生词本</el-button>
@@ -31,7 +31,7 @@
           </el-dropdown>
       </el-form-item>
     </el-form>
-    <el-table :data="showData" :default-sort="{prop: 'frequency', order: 'descending'}" border stripe height="250">
+    <el-table :data="data.showData" :default-sort="{prop: 'frequency', order: 'descending'}" border stripe height="250">
       <el-table-column label="序号">
         <template v-slot="scope">
           {{scope.$index+1}}
@@ -67,25 +67,27 @@
 </template>
 
 <script setup>
-import { ref, reactive, defineProps, computed, watch } from "vue";
+import { ref, reactive, defineProps, computed, watch, onMounted } from "vue";
 import { add } from "@/api/index"
 import { Collection, Plus, TurnOff, ArrowDown } from '@element-plus/icons'
 
 const props = defineProps({
-  data: Array,
+  formData: Array,
   showFrequency: Boolean
 })
 
 const currentPage = ref(1);
 
-const tableData = reactive([]);
-const showData = reactive([]);
+const data = reactive({
+  tableData: [],
+  showData: [],
+});
 const form = reactive({
   search: "",
 });
 
 const total = computed(() => {
-  return tableData.length;
+  return data.tableData.length;
 });
 
 const filterNew = (value, row) => {
@@ -93,7 +95,7 @@ const filterNew = (value, row) => {
 };
 
 const saveKnownWords = () => {
-  let words = tableData.map(item => {
+  let words = data.tableData.map(item => {
     if(!item.newFlag){
       return item.word
     }
@@ -117,18 +119,18 @@ const search = () => {
     alert("请输入单词进行搜索");
     return;
   }
-  showData = tableData.filter(item => item.word.indexOf(search) !== -1);
+  data.showData = data.tableData.filter(item => item.word.indexOf(search) !== -1);
 };
 
 const setAllKnown = () => {
-  showData.map(item=>{
+  data.showData.map(item=>{
     item.newFlag = false;
     return item;
   })
 };
 
 const handleCurrentChange = () => {
-  showData = tableData.slice(100*(currentPage-1), 100*currentPage);
+  data.showData = data.tableData.slice(100*(currentPage-1), 100*currentPage);
 }
 
 const updateKnownWords = () => {
@@ -144,13 +146,21 @@ const handleCommand = (command) => {
 };
 
 const init = () => {
-  tableData = JSON.parse(JSON.stringify(props.data));
-  showData = tableData.slice(0, 100);
+  data.tableData = JSON.parse(JSON.stringify(props.formData));
+  data.showData = data.tableData.slice(0, 100);
   form.search = "";
-  currentPage = 1;
+  currentPage.value = 1;
 };
 
-watch(() => props.data, () => {
+
+watch(
+  () => props.formData,
+  () => {
+    init();
+  }
+)
+
+onMounted(() => {
   init();
 });
 </script>

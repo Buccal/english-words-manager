@@ -1,6 +1,6 @@
 <template>
 <div class="knownWordsManager">
-  <WordList :data="wordsList" :showFrequency="false"></WordList>
+  <WordList :formData="wordsList" :showFrequency="false"></WordList>
 </div>
 </template>
 
@@ -9,7 +9,7 @@ import { reactive, onMounted } from "vue";
 import WordList from "../components/WordList"
 import { getKnownWords } from "@/api/index"
 
-const wordsList = reactive([]);
+let wordsList = reactive([]);
 
 onMounted(() => {
   let user_id = localStorage.getItem("user_id");
