@@ -112,3 +112,39 @@ vue3
 ref定义的变量，要使用.value改变值
 reactive定义的变量，集中包装到一个对象里，对象.变量改变值
 用let定义的变量，重新赋值会覆盖ref和reactive
+
+
+## 代码规范
+单文件组件名称
+- 多个单词：防止与未来html元素冲突 #A
+- PascalCase（有助自动补全；大小写不敏感系统出问题）或kebab-case #B
+- 基础（展示类的、无逻辑的或无状态的）组件名添加前缀（Base、App或V） #B
+  BaseButton.vue、AppButton.vue、VButton.vue
+- 单例（只有单个活跃实例）组件以The前缀命名，以示其唯一性，每个页面只能用一次
+
+
+组件属性
+- 尽量详细，至少指定类型 #A
+  - type
+  - required
+  - validator
+
+语法
+- 始终为v-for设置key值：以便维护内部组件及其子树的状态 #A
+- 永远不要在一个元素上同时使用v-if和v-for #A
+- 为单文件组件样式设置作用域：配合组件库的class覆盖样式 #A
+- 私有property名称 #A
+  - 添加$_前缀 #A
+  - 使用闭包 #A
+```
+methods: {
+  $_myPrivateFunction() {
+    // ...
+  }
+
+  publicMethod() {
+    myPrivateFunction()
+  }
+}
+```
+- 分为单文件组件 #B
