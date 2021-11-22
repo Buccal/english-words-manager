@@ -1,20 +1,37 @@
 <template>
   <div class="templateWords">
-    <WordList :form-data="data.wordsList"></WordList>
+    <WordList
+      :form-data="data.wordsList"
+      :button-list="data.buttonList"
+    ></WordList>
   </div>
 </template>
 
 <script setup>
-import { reactive, onMounted } from "vue";
+import { reactive, defineProps, onMounted } from "vue";
 import WordList from "../components/WordList";
 import { getTemplateWords } from "@/api/index";
 
+const props = defineProps({
+  level: {
+    type: String,
+    required: true,
+    default() {
+      return 'primary';
+    },
+  }
+});
+
 const data = reactive({
   wordsList: [],
+  buttonList: {
+    setAllKnown: true,
+    saveModify: true,
+  }
 });
 
 onMounted(() => {
-  getTemplateWords(user_id).then((res) => {
+  getTemplateWords(props.level).then((res) => {
     if (res.code === 200) {
       data.wordsList = res.data.map((item) => {
         let temp = {};

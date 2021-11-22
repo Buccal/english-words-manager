@@ -23,11 +23,12 @@ const routes = [
     path: '/known-words-manager',
     name: 'KnownWordsManager',
     component: () => import('../views/KnownWordsManager.vue'),
-    children: [{
-      path: 'template-words/:level',
-      component: () => import('../views/TemplateWords.vue'),
-    }]
   },
+  {
+    path: '/template-words/:level',
+    component: () => import('../views/TemplateWords.vue'),
+    props: true
+  }
 ]
 
 const router = createRouter({

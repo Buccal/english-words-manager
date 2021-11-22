@@ -5,7 +5,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item prop="search">
+      <el-form-item prop="search" v-if="data.buttonSetting.searchWord">
         <el-input
           v-model="form.search"
           size="small"
@@ -14,8 +14,8 @@
           clearable
         />
       </el-form-item>
-      <el-form-item v-if="props.showFrequency">
-        <el-button size="small">
+      <el-form-item>
+        <el-button size="small" v-if="data.buttonSetting.newWordBook">
           <el-icon class="el-icon--left">
             <Collection />
           </el-icon>保存到生词本
@@ -23,6 +23,7 @@
         <el-button
           size="small"
           @click="saveKnownWords"
+          v-if="data.buttonSetting.setKnown"
         >
           <el-icon class="el-icon--left">
             <Plus />
@@ -31,18 +32,21 @@
         <el-button
           size="small"
           @click="setAllKnown"
+          v-if="data.buttonSetting.setAllKnown"
         >
           <el-icon class="el-icon--left">
             <TurnOff />
           </el-icon>全部设为熟词
         </el-button>
-      </el-form-item>
-      <el-form-item v-if="!props.showFrequency">
         <el-button
           size="small"
           @click="updateKnownWords"
+          v-if="data.buttonSetting.saveModify"
         >保存修改</el-button>
-        <el-dropdown @command="handleCommand">
+        <el-dropdown
+          @command="handleCommand"
+          v-if="data.buttonSetting.importWord"
+        >
           <el-button size="small">
             导入<el-icon class="el-icon--right">
               <ArrowDown />
@@ -69,7 +73,6 @@
       :default-sort="{prop: 'frequency', order: 'descending'}"
       border
       stripe
-      height="250"
     >
       <el-table-column label="序号">
         <template v-slot="scope">
@@ -138,13 +141,29 @@ const props = defineProps({
     required: false,
     default: false,
   },
+
+  buttonList: {
+    type: Object,
+    required: false,
+    default: {},
+  }
 });
 
 const currentPage = ref(1);
 
+const defaultButtonList = {
+  searchWord: true,
+  newWordBook: false,
+  setKnown: false,
+  setAllKnown: false,
+  saveModify: false,
+  importWord: false,
+};
+
 const data = reactive({
   tableData: [],
   showData: [],
+  buttonSetting: {}
 });
 const form = reactive({
   search: "",
@@ -216,18 +235,18 @@ const updateKnownWords = () => {};
 
 const handleCommand = (command) => {
   if (command === "primary" || command === "middle" || command === "high") {
-    router.push();
+    router.push('/template-words/' + command);
   } else {
     alert("暂不支持");
   }
 };
 
 const init = () => {
-  // debugger
   data.tableData = JSON.parse(JSON.stringify(props.formData));
   data.showData = data.tableData.slice(0, 100);
   form.search = "";
   currentPage.value = 1;
+  data.buttonSetting = Object.assign({}, defaultButtonList, props.buttonList);
 };
 
 </script>

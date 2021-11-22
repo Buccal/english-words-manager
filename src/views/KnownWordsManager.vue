@@ -1,6 +1,9 @@
 <template>
   <div class="knownWordsManager">
-    <WordList :form-data="data.wordsList"></WordList>
+    <WordList 
+      :form-data="data.wordsList"
+      :button-list="data.buttonList"
+    ></WordList>
   </div>
 </template>
 
@@ -11,6 +14,10 @@ import { getKnownWords } from "@/api/index";
 
 const data = reactive({
   wordsList: [],
+  buttonList: {
+    saveModify: true,
+    importWord: true,
+  }
 });
 
 onMounted(() => {

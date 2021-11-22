@@ -22,6 +22,7 @@
     <WordList
       :form-data="data.wordsList"
       :show-frequency="true"
+      :button-list="data.buttonList"
     ></WordList>
   </div>
 </template>
@@ -39,6 +40,11 @@ const form = reactive({
 
 const data = reactive({
   wordsList: [],
+  buttonList: {
+    newWordBook: true,
+    setKnown: true,
+    setAllKnown: true,
+  }
 });
 
 const onSubmit = () => {
