@@ -108,3 +108,11 @@ export function getBooks(user_id) {
     method: 'get',
   })
 }
+
+// 获取模板单词列表
+export function getTemplateWords(level) {
+  return request({
+    url: '/template_word/list/' + level,
+    method: 'get',
+  })
+}

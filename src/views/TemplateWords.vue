@@ -1,5 +1,5 @@
 <template>
-  <div class="knownWordsManager">
+  <div class="templateWords">
     <WordList :form-data="data.wordsList"></WordList>
   </div>
 </template>
@@ -7,24 +7,14 @@
 <script setup>
 import { reactive, onMounted } from "vue";
 import WordList from "../components/WordList";
-import { getKnownWords } from "@/api/index";
+import { getTemplateWords } from "@/api/index";
 
 const data = reactive({
   wordsList: [],
 });
 
 onMounted(() => {
-  let user_id = localStorage.getItem("user_id");
-  if (!user_id) {
-    alert("请先登录");
-    router.replace({
-      path: "/login",
-      query: {
-        redirect: router.currentRoute.fullPath,
-      },
-    });
-  }
-  getKnownWords(user_id).then((res) => {
+  getTemplateWords(user_id).then((res) => {
     if (res.code === 200) {
       data.wordsList = res.data.map((item) => {
         let temp = {};

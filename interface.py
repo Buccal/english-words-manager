@@ -145,10 +145,10 @@ async def get_known_words(user_id: str):
     }
 
 # 获取模板词库
-@app.get("/template_word/list/{type}")
-async def get_known_words(type: str):
+@app.get("/template_word/list/{level}")
+async def get_known_words(level: str):
     template_words = db["TEMPLATE_WORDS"]
-    result = template_words.find_one({"level": type})
+    result = template_words.find_one({"level": level})
     if(result == None):
         return {
             "msg": "用户不存在"

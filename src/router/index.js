@@ -20,10 +20,14 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/WordFrequency.vue')
   },
   {
-    path: '/knownWordsManager',
+    path: '/known-words-manager',
     name: 'KnownWordsManager',
-    component: () => import('../views/KnownWordsManager.vue')
-  }
+    component: () => import('../views/KnownWordsManager.vue'),
+    children: [{
+      path: 'template-words/:level',
+      component: () => import('../views/TemplateWords.vue'),
+    }]
+  },
 ]
 
 const router = createRouter({

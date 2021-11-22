@@ -120,6 +120,7 @@
 
 <script setup>
 import { ref, reactive, defineProps, computed, watch, onMounted } from "vue";
+import router from "@/router/index.js";
 import { add } from "@/api/index";
 import { Collection, Plus, TurnOff, ArrowDown } from "@element-plus/icons";
 
@@ -215,12 +216,14 @@ const updateKnownWords = () => {};
 
 const handleCommand = (command) => {
   if (command === "primary" || command === "middle" || command === "high") {
+    router.push();
   } else {
     alert("暂不支持");
   }
 };
 
 const init = () => {
+  // debugger
   data.tableData = JSON.parse(JSON.stringify(props.formData));
   data.showData = data.tableData.slice(0, 100);
   form.search = "";
@@ -230,4 +233,15 @@ const init = () => {
 </script>
 
 <style lang="scss" scoped>
+.operation {
+  vertical-align: middle;
+}
+
+.el-dropdown {
+  margin-left: 5px;
+
+  & .el-button{
+    padding: 8px 15px;
+  }
+}
 </style>
