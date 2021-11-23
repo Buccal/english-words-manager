@@ -13,24 +13,22 @@ function changeHasPermission(el, binding) {
   }
 
   function getUserRole() {
-    if(!localStorage.localStorage.getItem("user_id")){
+    if(!localStorage.getItem("user_id")){
       return "visitor";
     }else{
       return "user";
-      // return localStorage.localStorage.getItem("role");
+      // return localStorage.getItem("role");
     }
   }
 }
 
-
-
-const install = function(Vue) {
-  Vue.directive('hasPermi', {
-    bind: function(el, binding, vnode) {
-      changeHasPermission(el, binding)
-    },
-    update(el, binding, vnode) {
-      changeHasPermission(el, binding)
-    }
-  })
-}
+export default {
+  install(Vue){
+    Vue.directive('hasPermi', {
+      mounted(el, binding) {
+        debugger
+        changeHasPermission(el, binding);
+      }
+    })
+  }
+};
