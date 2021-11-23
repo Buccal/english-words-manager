@@ -14,7 +14,7 @@
           clearable
         />
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-hasPermi="'frequency-operater'">
         <el-button size="small" v-if="data.buttonSetting.newWordBook">
           <el-icon class="el-icon--left">
             <Collection />

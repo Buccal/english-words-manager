@@ -1,6 +1,6 @@
 <template>
   <div class="knownWordsManager">
-    <WordList 
+    <WordList
       :form-data="data.wordsList"
       :button-list="data.buttonList"
     ></WordList>

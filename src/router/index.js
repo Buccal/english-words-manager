@@ -1,33 +1,64 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import Layout from "@/layout";
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: () => import('../views/Home.vue')
+    path: '',
+    component: Layout,
+    redirect: "index",
+    children: [{
+      path: "index",
+      component: () => import('@/views/Home.vue'),
+      name: "首页",
+      meta: { title: "首页", icon: "dashboard", noCache: true, affix: true }
+    },
+    {
+      path: 'frequency',
+      name: 'WordFrequency',
+      component: () => import('@/views/WordFrequency.vue')
+    },
+    {
+      path: 'known-words-manager',
+      name: 'KnownWordsManager',
+      component: () => import('@/views/KnownWordsManager.vue'),
+    },
+    {
+      path: 'template-words/:level',
+      component: () => import('@/views/TemplateWords.vue'),
+      props: true
+    }]
   },
+  // {
+  //   path: "/",
+  //   component: Layout,
+  //   meta:{
+  //     requireAuth: true
+  //   },
+  //   children: [{
+  //     path: 'frequency',
+  //     name: 'WordFrequency',
+  //     component: () => import('@/views/WordFrequency.vue')
+  //   },
+  //   {
+  //     path: 'known-words-manager',
+  //     name: 'KnownWordsManager',
+  //     component: () => import('@/views/KnownWordsManager.vue'),
+  //   },
+  //   {
+  //     path: 'template-words/:level',
+  //     component: () => import('@/views/TemplateWords.vue'),
+  //     props: true
+  //   }]
+  // },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/login.vue')
+    component: () => import('@/views/login.vue')
   },
   {
-    path: '/frequency',
-    name: 'WordFrequency',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/WordFrequency.vue')
-  },
-  {
-    path: '/known-words-manager',
-    name: 'KnownWordsManager',
-    component: () => import('../views/KnownWordsManager.vue'),
-  },
-  {
-    path: '/template-words/:level',
-    component: () => import('../views/TemplateWords.vue'),
-    props: true
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: resolve => require(["@/views/404"], resolve),
   }
 ]
 

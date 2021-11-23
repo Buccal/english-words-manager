@@ -269,3 +269,26 @@ methods: {
 字符串模板：写在vue实例定义组件时，如template: 'blabla'
 JSX
 DOM模板：写在html文件中
+
+
+## 图标
+Avatar、Stamp、UserFilled 用户
+BrushFilled、Brush 主题
+Histogram 词频
+
+HomeFilled、House 主页
+
+InfoFilled 更多信息
+QuestionFilled 问题
+
+MoonNight、Moon 月亮
+Sunrise、Sunny 太阳
+
+Management 单词本
+
+Setting、Tools 设置
+Share 分享
+
+Sugar
+
+https://www.cnblogs.com/BlueCc/p/14339424.html
