@@ -5,11 +5,11 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import App from './App.vue'
 import router from './router'
 import store from "./store";
-
 import permission from "./directive/permission";
 
 createApp(App)
   .use(router)
   .use(ElementPlus, { locale: zhCn })
+  .use(store)
   .use(permission)
   .mount('#app')

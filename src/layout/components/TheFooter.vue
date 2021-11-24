@@ -1,3 +1,9 @@
 <template>
-	<p>This is footer.</p>
+  <p id="footer">This is footer.</p>
 </template>
+
+<style scoped>
+#footer {
+	text-align: center;
+}
+</style>

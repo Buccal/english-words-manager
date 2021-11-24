@@ -4,7 +4,11 @@
       <TheHeader />
     </el-header>
     <el-main>
-      <router-view></router-view>
+      <el-row>
+        <el-col :span="12" :offset="6">
+          <router-view></router-view>
+        </el-col>
+      </el-row>
     </el-main>
     <el-footer>
       <TheFooter />
@@ -13,9 +17,8 @@
 </template>
 
 <script setup>
-import TheHeader from './components/TheHeader'
-import TheFooter from './components/TheFooter'
-
+import TheHeader from "./components/TheHeader";
+import TheFooter from "./components/TheFooter";
 </script>
 
 <style lang="scss" scoped>

@@ -2,6 +2,7 @@
   <el-menu
     :default-active="activeIndex"
     mode="horizontal"
+    :ellipsis="false"
     @select="handleSelect"
     router
   >
@@ -10,8 +11,14 @@
     active-text-color="#409EFF" -->
     <el-menu-item index="/" id="logo">logo</el-menu-item>
 
-
     <el-menu-item index="/frequency">词频</el-menu-item>
+
+    <el-sub-menu index="1" v-hasPermi="'words-manager'">
+      <template #title>管理</template>
+      <el-menu-item index="known-words-manager">熟词</el-menu-item>
+      <el-menu-item index="1-1">单词本</el-menu-item>
+    </el-sub-menu>
+
     <el-sub-menu index="2">
       <template #title>语言</template>
       <el-menu-item index="2-1">zh-CN</el-menu-item>
@@ -23,6 +30,7 @@
         <el-menu-item index="2-4-2">zh-HK</el-menu-item>
       </el-sub-menu>
     </el-sub-menu>
+
     <el-menu-item index="/login">登录</el-menu-item>
   </el-menu>
 </template>

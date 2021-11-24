@@ -4,6 +4,7 @@
       ref="ruleform"
       :model="form"
       label-width="120px"
+      label-position="top"
     >
       <el-form-item label="文本：">
         <el-input

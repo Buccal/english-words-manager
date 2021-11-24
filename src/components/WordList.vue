@@ -99,6 +99,7 @@
         ]"
         :filter-method="filterNew"
         filter-placement="bottom-end"
+        v-hasPermi="'frequency-operater'"
       >
         <template #default="scope">
           <el-switch

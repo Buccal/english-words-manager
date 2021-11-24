@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import $store from "@/store/index";
 
 const permiList = {
   visitor: [],
@@ -13,11 +14,10 @@ function changeHasPermission(el, binding) {
   }
 
   function getUserRole() {
-    if(!localStorage.getItem("user_id")){
-      return "visitor";
-    }else{
+    if ($store.getters.loginStatus){
       return "user";
-      // return localStorage.getItem("role");
+    }else{
+      return "visitor";
     }
   }
 }
@@ -26,7 +26,6 @@ export default {
   install(Vue){
     Vue.directive('hasPermi', {
       mounted(el, binding) {
-        debugger
         changeHasPermission(el, binding);
       }
     })
