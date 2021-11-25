@@ -43,7 +43,7 @@
 <script setup>
 import { ref, reactive, toRefs } from "vue";
 import router from "@/router/index.js";
-import $store from "@/store/index";
+import store from "@/store/index";
 import { register, login } from "@/api/index";
 
 const ruleform = ref(null);
@@ -58,7 +58,7 @@ const form = reactive({
 const handleRegister = () => {
   register(form).then((res) => {
     if (res.code === 200 && res.data) {
-      $store.commit('$_setStorage', { user_id: res.data });
+      store.commit('$_setStorage', { user_id: res.data });
       router.push("/");
     } else {
       alert("注册失败，原因为：" + res.msg);
@@ -69,7 +69,7 @@ const handleRegister = () => {
 const handleLogin = () => {
   login(form).then((res) => {
     if (res.code === 200 && res.data) {
-      $store.commit('$_setStorage', { user_id: res.data });
+      store.commit('$_setStorage', { user_id: res.data });
       router.push("/");
     } else {
       alert("登录失败，原因为：" + res.msg);

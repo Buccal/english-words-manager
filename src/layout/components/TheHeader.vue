@@ -1,8 +1,9 @@
 <template>
   <el-menu
-    :default-active="activeIndex"
-    mode="horizontal"
+    :default-active="router.currentRoute._value.path"
     :ellipsis="false"
+    mode="horizontal"
+    menu-trigger="hover"
     @select="handleSelect"
     router
   >
@@ -19,29 +20,43 @@
       <el-menu-item index="1-1">单词本</el-menu-item>
     </el-sub-menu>
 
-    <el-sub-menu index="2">
+    <el-sub-menu index="language">
       <template #title>语言</template>
-      <el-menu-item index="2-1">zh-CN</el-menu-item>
-      <el-menu-item index="2-2">en-US</el-menu-item>
-      <el-menu-item index="2-3">zh-MO</el-menu-item>
+      <el-menu-item index="zh-CN">中文</el-menu-item>
+      <el-menu-item index="en-US">English</el-menu-item>
+      <el-menu-item index="ru-RU">русский язык</el-menu-item>
       <el-sub-menu index="2-4">
         <template #title>其他</template>
-        <el-menu-item index="2-4-1">zh-TW</el-menu-item>
-        <el-menu-item index="2-4-2">zh-HK</el-menu-item>
+        <el-menu-item index="de-DE">Deutsch</el-menu-item>
+        <el-menu-item index="fr-FR">Français</el-menu-item>
+        <el-menu-item index="es-ES">Español</el-menu-item>
+        <el-menu-item index="ja-JP">日本語</el-menu-item>
+        <el-menu-item index="ko-KR">한국어 공부 해요</el-menu-item>
       </el-sub-menu>
     </el-sub-menu>
+    <el-menu-item index="/login" v-if="showLogin">登录</el-menu-item>
 
-    <el-menu-item index="/login">登录</el-menu-item>
+    <el-sub-menu index="5" v-if="!showLogin">
+      <template #title>我的</template>
+      <el-menu-item index="5-1">设置</el-menu-item>
+      <el-menu-item index="logout">登出</el-menu-item>
+    </el-sub-menu>
   </el-menu>
 </template>
 
 <script setup>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, computed } from 'vue'
+import router from "@/router/index";
+import store from "@/store/index";
 
-const activeIndex = ref('/')
+const showLogin = computed(() => {
+  return !store.getters.loginStatus
+});
 
 const handleSelect = (key, keyPath) => {
-  console.log(key, keyPath)
+  if(key === 'logout'){
+    store.commit('$_removeStorage');
+  }
 }
 </script>
 

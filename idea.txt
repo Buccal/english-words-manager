@@ -58,3 +58,6 @@ Share 分享
 
 Sugar
 	设置页
+
+## 可能会用到的插件
+nprogress

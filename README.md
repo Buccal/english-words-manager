@@ -44,5 +44,3 @@ https://fastapi.tiangolo.com/zh/tutorial/query-params/
 http://127.0.0.1:8000/docs#/default/get_book_list_book_get
 http://127.0.0.1:8000/redoc#operation/root__get
 https://element-plus.gitee.io/zh-CN/component/pagination.html#%E9%99%84%E5%8A%A0%E5%8A%9F%E8%83%BD
-
-根据登录状态显示登录、我的（设置、登出）按钮

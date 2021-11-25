@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import $store from "@/store/index";
+import store from "@/store/index";
 
 const permiList = {
   visitor: [],
@@ -14,7 +14,7 @@ function changeHasPermission(el, binding) {
   }
 
   function getUserRole() {
-    if ($store.getters.loginStatus){
+    if (store.getters.loginStatus){
       return "user";
     }else{
       return "visitor";

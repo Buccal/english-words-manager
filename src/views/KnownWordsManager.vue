@@ -9,6 +9,7 @@
 
 <script setup>
 import { reactive, onMounted } from "vue";
+import store from "@/store/index";
 import WordList from "../components/WordList";
 import { getKnownWords } from "@/api/index";
 
@@ -21,17 +22,7 @@ const data = reactive({
 });
 
 onMounted(() => {
-  let user_id = localStorage.getItem("user_id");
-  if (!user_id) {
-    alert("请先登录");
-    router.replace({
-      path: "/login",
-      query: {
-        redirect: router.currentRoute.fullPath,
-      },
-    });
-  }
-  getKnownWords(user_id).then((res) => {
+  getKnownWords(store.state.user_id).then((res) => {
     if (res.code === 200) {
       data.wordsList = res.data.map((item) => {
         let temp = {};
