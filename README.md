@@ -24,23 +24,46 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### Note
-1. æ–‡æœ¬åŸŸæ— æ³•è¾“å…¥æ˜¯å› ä¸ºè¡¨å•çš„refå’Œv-modelä¸€è‡´
+1. ÎÄ±¾ÓòÎŞ·¨ÊäÈëÊÇÒòÎª±íµ¥µÄrefºÍv-modelÒ»ÖÂ
 
-2. refå®šä¹‰çš„å˜é‡ï¼Œè¦ä½¿ç”¨.valueæ”¹å˜å€¼
-reactiveå®šä¹‰çš„å˜é‡ï¼Œé›†ä¸­åŒ…è£…åˆ°ä¸€ä¸ªå¯¹è±¡é‡Œï¼Œå¯¹è±¡.å˜é‡æ”¹å˜å€¼
-ç”¨letå®šä¹‰çš„å˜é‡ï¼Œé‡æ–°èµ‹å€¼ä¼šè¦†ç›–refå’Œreactive
+2. ref¶¨ÒåµÄ±äÁ¿£¬ÒªÊ¹ÓÃ.value¸Ä±äÖµ
+reactive¶¨ÒåµÄ±äÁ¿£¬¼¯ÖĞ°ü×°µ½Ò»¸ö¶ÔÏóÀï£¬¶ÔÏó.±äÁ¿¸Ä±äÖµ
+ÓÃlet¶¨ÒåµÄ±äÁ¿£¬ÖØĞÂ¸³Öµ»á¸²¸ÇrefºÍreactive
 
 ### Error
-ç™»é™†æ³¨å†Œé¡µï¼Œç‚¹å‡»è¾“å…¥æ¡†ï¼ŒæŠ¥é”™runtime-core.esm-bundler.js?5c40:6584
+µÇÂ½×¢²áÒ³£¬µã»÷ÊäÈë¿ò£¬±¨´íruntime-core.esm-bundler.js?5c40:6584
 [Vue warn]: Invalid event arguments: event validation failed for event "keydown".
 
 ### Reference
-[webpackæ­å»ºvueé¡¹ç›®](https://www.jianshu.com/p/d56425fc6c23)
-[æ€»ç»“ï¼švueä¸­Axiosçš„å°è£…-APIæ¥å£çš„ç®¡ç†](https://www.jianshu.com/p/5e578b046577)
+[webpack´î½¨vueÏîÄ¿](https://www.jianshu.com/p/d56425fc6c23)
+[×Ü½á£ºvueÖĞAxiosµÄ·â×°-API½Ó¿ÚµÄ¹ÜÀí](https://www.jianshu.com/p/5e578b046577)
 
 ### Study
-[vue3è¯­æ³•å‚è€ƒ](https://juejin.cn/post/7031086963214483492)
+[vue3Óï·¨²Î¿¼](https://juejin.cn/post/7031086963214483492)
 https://fastapi.tiangolo.com/zh/tutorial/query-params/
 http://127.0.0.1:8000/docs#/default/get_book_list_book_get
 http://127.0.0.1:8000/redoc#operation/root__get
-https://element-plus.gitee.io/zh-CN/component/pagination.html#%E9%99%84%E5%8A%A0%E5%8A%9F%E8%83%BD
+https://element-plus.gitee.io/zh-CN/component/pagination.html#%E9%99%84%E5%8A%A0%E5%8A%9F%E8%83%BD# new-words-frequency
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
