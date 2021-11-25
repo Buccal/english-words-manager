@@ -125,6 +125,7 @@
 <script setup>
 import { ref, reactive, defineProps, computed, watch, onMounted } from "vue";
 import router from "@/router/index.js";
+import store from "@/store/index";
 import { add } from "@/api/index";
 import { Collection, Plus, TurnOff, ArrowDown } from "@element-plus/icons";
 
@@ -189,7 +190,7 @@ const saveKnownWords = () => {
     return;
   }
   add({
-    user_id: localStorage.getItem("user_id"),
+    user_id: store.state.user_id,
     words: words,
   }).then((res) => {
     if (res.code === 200) {

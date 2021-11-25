@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from typing import Optional
 from starlette.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pymongo
@@ -73,7 +74,7 @@ async def login(arg: User):
 
 class Source(BaseModel):
     user_id: str
-    context: str
+    context: Optional[str] = None
 
 # 计算词频
 @app.post("/wordfrequency")
@@ -84,12 +85,15 @@ async def cal_word_frequency(source: Source):
         context = context.replace(ch, " ")
     words  = context.split()
     counts = {}
-    result = known_words.find_one({"user_id": source.user_id})
-    if(result == None):
-        return {
-            "msg": "用户不存在"
-        }
-    exclude = result["words"]
+    if source.user_id == True:
+        result = known_words.find_one({"user_id": source.user_id})
+        if(result == None):
+            return {
+                "msg": "用户不存在"
+            }
+        exclude = result["words"]
+    else:
+        exclude = []
     for word in words:
         if len(word) == 1:
             continue

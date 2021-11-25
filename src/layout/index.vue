@@ -39,4 +39,8 @@ import TheFooter from "./components/TheFooter";
   width: 65%;
   margin: 0 auto;
 }
+
+.el-header {
+  padding: 0;
+}
 </style>

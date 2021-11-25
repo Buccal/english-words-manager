@@ -37,9 +37,13 @@
     <el-menu-item index="/login" v-if="showLogin">登录</el-menu-item>
 
     <el-sub-menu index="5" v-if="!showLogin">
-      <template #title>我的</template>
+      <template #title>
+        <el-avatar
+          src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+        ></el-avatar>
+      </template>
       <el-menu-item index="5-1">设置</el-menu-item>
-      <el-menu-item index="logout">登出</el-menu-item>
+      <el-menu-item :index="router.currentRoute._value.path">登出</el-menu-item>
     </el-sub-menu>
   </el-menu>
 </template>
@@ -54,8 +58,9 @@ const showLogin = computed(() => {
 });
 
 const handleSelect = (key, keyPath) => {
-  if(key === 'logout'){
+  if(key === router.currentRoute._value.path){
     store.commit('$_removeStorage');
+    window.location.reload();
   }
 }
 </script>

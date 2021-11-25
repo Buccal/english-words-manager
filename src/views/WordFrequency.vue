@@ -30,6 +30,7 @@
 
 <script setup>
 import { ref, reactive } from "vue";
+import store from "@/store/index";
 import WordList from "../components/WordList";
 import { wordfrequency } from "@/api/index";
 
@@ -54,7 +55,7 @@ const onSubmit = () => {
     return;
   }
   wordfrequency({
-    user_id: localStorage.getItem("user_id"),
+    user_id: store.state.user_id,
     context: form.context,
   }).then((res) => {
     if (res.code === 200) {

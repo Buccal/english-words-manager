@@ -5,7 +5,7 @@ const key = 'user_id'
 const store = createStore({
   state () {
     return {
-      user_id: localStorage.getItem(key),
+      user_id: localStorage.getItem(key) ? localStorage.getItem(key) : "",
     }
   },
   getters: {
@@ -19,7 +19,7 @@ const store = createStore({
       localStorage.setItem(key, payload.user_id);
     },
     $_removeStorage(state) {
-      state.user_id = null;
+      state.user_id = "";
       localStorage.removeItem(key);
     }
   },

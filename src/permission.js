@@ -2,7 +2,7 @@ import { ElMessageBox } from 'element-plus'
 import router from './router'
 import store from './store'
 
-const whiteList = ['/login', '/logout', '/index', '/frequency']
+const whiteList = ['/login', '/index', '/frequency']
 
 router.beforeEach((to, from, next) => {
   if (store.getters.loginStatus) {
@@ -28,8 +28,6 @@ router.beforeEach((to, from, next) => {
       })
       .catch(() => {
         console.log(next({ path: '/' }));
-        debugger
-        // window.location.reload();
       })
     }
   }

@@ -1,41 +1,76 @@
 <template>
   <el-row class="login">
     <el-col :span="12" :offset="6">
-      <el-form
-        label-width="120px"
-        ref="ruleform"
-        :model="form"
-        class="login_form"
-      >
-        <el-form-item
-          label="账号："
-          prop="account"
-        >
-          <el-input
-            v-model="form.account"
-            type="text"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
-          label="密码："
-          prop="password"
-        >
-          <el-input
-            v-model="form.password"
-            type="password"
-          ></el-input>
-        </el-form-item>
-        <el-form-item style="text-align: center">
-          <el-button
-            type="primary"
-            @click="handleRegister()"
-          >注册</el-button>
-          <el-button
-            type="primary"
-            @click="handleLogin()"
-          >登录</el-button>
-        </el-form-item>
-      </el-form>
+      <el-tabs type="border-card">
+        <el-tab-pane label="登录">
+          <el-form
+            label-width="120px"
+            ref="ruleform"
+            :model="form"
+            class="form"
+          >
+            <el-form-item
+              label="账号："
+              prop="account"
+            >
+              <el-input
+                v-model="form.account"
+                type="text"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              label="密码："
+              prop="password"
+            >
+              <el-input
+                v-model="form.password"
+                type="password"
+                @keydown.enter="handleLogin"
+              ></el-input>
+            </el-form-item>
+            <div style="text-align: center">
+              <el-button
+                type="primary"
+                @click="handleLogin()"
+              >登录</el-button>
+            </div>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="注册">
+          <el-form
+            label-width="120px"
+            ref="ruleform"
+            :model="form"
+            class="form"
+          >
+            <el-form-item
+              label="账号："
+              prop="account"
+            >
+              <el-input
+                v-model="form.account"
+                type="text"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              label="密码："
+              prop="password"
+            >
+              <el-input
+                v-model="form.password"
+                type="password"
+                @keydown.enter="handleRegister"
+              ></el-input>
+            </el-form-item>
+            <div style="text-align: center">
+              <el-button
+                type="primary"
+                @click="handleRegister()"
+              >注册</el-button>
+            </div>
+          </el-form>
+        </el-tab-pane>
+      </el-tabs>
     </el-col>
   </el-row>
 </template>
@@ -80,10 +115,14 @@ const handleLogin = () => {
 
 <style lang="scss" scoped>
 .login {
-  margin-top: 200px;
+  margin-top: 100px;
 
-  &_form {
-    padding: 0 100px;
+  & .form {
+    margin: 50px 100px;
+
+    & .el-input {
+      width: 280px;
+    }
   }
 }
 </style>
