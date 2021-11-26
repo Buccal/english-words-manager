@@ -28,6 +28,18 @@ const routes = [
       props: true
     }]
   },
+  {
+    path: '/logo',
+    name: 'logo',
+    redirect: "index",
+    component: () => import('@/views/Home.vue'),
+  },
+  {
+    path: '/logout',
+    name: 'logout',
+    redirect: "index",
+    component: () => import('@/views/Home.vue'),
+  },
   // {
   //   path: "/",
   //   component: Layout,

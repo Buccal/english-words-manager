@@ -74,23 +74,24 @@
       border
       stripe
     >
-      <el-table-column label="序号">
+      <el-table-column align="center" type="selection" width="55" />
+      <el-table-column align="center" label="序号">
         <template v-slot="scope">
           {{scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column
+      <el-table-column align="center"
         prop="word"
         label="单词"
         sortable
       ></el-table-column>
-      <el-table-column
+      <el-table-column align="center"
         prop="frequency"
         label="词频"
         v-if="props.showFrequency"
         sortable
       ></el-table-column>
-      <el-table-column
+      <el-table-column align="center"
         label="是否为生词"
         prop="newFlag"
         :filters="[
