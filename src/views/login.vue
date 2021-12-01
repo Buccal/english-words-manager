@@ -118,7 +118,7 @@ const handleLogin = () => {
   margin-top: 100px;
 
   & .form {
-    margin: 50px 100px;
+    margin-top: 25px;
 
     & .el-input {
       width: 280px;

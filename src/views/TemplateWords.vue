@@ -1,15 +1,14 @@
 <template>
   <div class="templateWords">
-    <WordList
-      :form-data="data.wordsList"
-      :button-list="data.buttonList"
-    ></WordList>
+    <WordsGroup
+      :words="data.wordsList"
+    ></WordsGroup>
   </div>
 </template>
 
 <script setup>
 import { reactive, defineProps, onMounted } from "vue";
-import WordList from "../components/WordList";
+import WordsGroup from "../components/WordsGroup";
 import { getTemplateWords } from "@/api/index";
 
 const props = defineProps({
@@ -24,21 +23,12 @@ const props = defineProps({
 
 const data = reactive({
   wordsList: [],
-  buttonList: {
-    setAllKnown: true,
-    saveModify: true,
-  }
 });
 
 onMounted(() => {
   getTemplateWords(props.level).then((res) => {
     if (res.code === 200) {
-      data.wordsList = res.data.map((item) => {
-        let temp = {};
-        temp.word = item;
-        temp.newFlag = false;
-        return temp;
-      });
+      data.wordsList = res.data;
     }
   });
 });
