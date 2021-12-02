@@ -1,29 +1,32 @@
 <template>
-  <el-button>全选</el-button>
-  <el-button @click="">导入选中单词</el-button>
-  <el-dropdown split-button type="primary" @click="handleOperation">
-    <template #dropdown>
-      <el-dropdown-menu>
-        <!-- <el-dropdown-item command=""></el-dropdown-item> -->
-        <el-dropdown-item command="collapse-all">折叠所有</el-dropdown-item>
-        <el-dropdown-item command="expand-all">展开所有</el-dropdown-item>
-        <el-dropdown-item command="import-all">导入全部单词</el-dropdown-item>
-      </el-dropdown-menu>
-    </template>
-  </el-dropdown>
+  <div class="operationGroup">
+    <el-button size="small" @click="handleSelectAll">全选</el-button>
+    <el-button size="small" @click="handleExpandGroup">展开所有</el-button>
+    <el-button size="small" @click="importSelected">导入选中</el-button>
+    <el-dropdown size="small" split-button @command="handleCommand" style="margin-left: 10px;">
+      更多
+      <template #dropdown>
+        <el-dropdown-menu>
+          <!-- <el-dropdown-item command=""></el-dropdown-item> -->
+          <el-dropdown-item command="collapse-all">折叠所有</el-dropdown-item>
+          <el-dropdown-item command="import-all">导入全部单词</el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
+  </div>
   <el-collapse v-model="data.activeGroups">
     <el-collapse-item :title="item.group" :name="item.group" v-for="(item, key) in data.wordsGroupList">
       <el-checkbox
         v-model="item.checkAll"
         :indeterminate="item.isIndeterminate"
-        @change="handleCheckAllChange"
+        @change="handleCheckAllChange(item)"
         >全选</el-checkbox
       >
       <el-checkbox-group
-        v-model="data.checkedWords"
-        @change="handleCheckedWordsChange"
+        v-model="item.checkedWords"
+        @change="handleCheckedWordsChange(item)"
       >
-        <el-checkbox v-for="word in item.words" :key="word" :label="word">{{
+        <el-checkbox v-for="word in item.words" :key="word" :label="word" style="width: 150px;">{{
           word
         }}</el-checkbox>
       </el-checkbox-group>
@@ -32,7 +35,7 @@
 </template>
 
 <script setup>
-import { reactive, defineProps, watch, onMounted } from 'vue'
+import { reactive, defineProps, computed, watch, onMounted } from 'vue'
 
 const props = defineProps({
   words: {
@@ -46,7 +49,7 @@ const props = defineProps({
   defaultGroup: {
     type: String,
     required: false,
-    default: "",
+    default: "A",
   },
 });
 
@@ -54,10 +57,17 @@ const groupList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "
 
 const data = reactive({
   activeGroups: [],
+  uniqueWords: [],
   wordsGroupList: [],
-  checkedWords: [],
 });
 
+const allCheckedWords = computed(() => {
+  return data.wordsGroupList.reduce((acc, item, index) => {
+    return index === 1
+      ? acc.checkedWords.concat(item.checkedWords)
+      : acc.concat(item.checkedItems);
+  });
+});
 
 watch(
   () => props.words,
@@ -70,16 +80,48 @@ onMounted(() => {
   init();
 });
 
-const handleOperation = () => {
+const handleSelectAll = () => {
+  for(let item of data.wordsGroupList){
+    item.checkedWords = [...item.words];
+    item.checkAll = true;
+    item.isIndeterminate = false;
+  }
+}
+
+const handleExpandGroup = () => {
+  data.activeGroups = [...groupList];
+}
+
+const importSelected = () => {
   //
 }
 
-const handleCheckAllChange = () => {
-  console.log("all checked");
+const handleCommand = (command) => {
+  switch (command) {
+    case "collapse-all":
+      data.activeGroups = [];
+      break;
+    case "import-all":
+      //
+      break;
+    default:
+      // statements_def
+      break;
+  }
+}
+
+const handleCheckAllChange = (item) => {
+  item.checkedWords = item.checkAll
+    ? [...item.words]
+    : [];
+  item.isIndeterminate = false;
 };
 
-const handleCheckedWordsChange = () => {
-  console.log("select changed");
+const handleCheckedWordsChange = (item) => {
+  let checkedCount = item.checkedWords.length,
+    itemCount = item.words.length;
+  item.checkAll = checkedCount === itemCount;
+  item.isIndeterminate = checkedCount > 0 && checkedCount < itemCount;
 };
 
 const filterWords = (wordsArray, filterStr) => {
@@ -92,17 +134,18 @@ const uniqueArray = (arr) =>  {
 
 const init = () => {
   data.activeGroups = props.defaultGroup.split("");
-  let wordsArray = uniqueArray(props.words);
+  data.uniqueWords = uniqueArray(props.words);
   data.wordsGroupList = []
   for(let i=0; i<groupList.length; i++){
     let tempItem = {
       group: "",
       checkAll: false,
       isIndeterminate: false,
-      words: []
+      words: [],
+      checkedWords: [],
     };
     tempItem.group = groupList[i];
-    tempItem.words = filterWords(wordsArray, tempItem.group);
+    tempItem.words = filterWords(data.uniqueWords, tempItem.group);
     if(tempItem.words.length){
       data.wordsGroupList.push(tempItem);
     }
@@ -111,4 +154,10 @@ const init = () => {
 
 </script>
 
-
+<style type="text/css" scoped>
+.operationGroup {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: right;
+}
+</style>
