@@ -1,15 +1,14 @@
 <template>
   <div class="operationGroup">
-    <el-button size="small" @click="handleSelectAll">全选</el-button>
-    <el-button size="small" @click="handleExpandGroup">展开所有</el-button>
-    <el-button size="small" @click="importSelected">导入选中</el-button>
+    <el-button size="small" @click="toggleSelectAll">{{ data.selectAll ? '' : '取消'}}全选</el-button>
+    <el-button size="small" @click="toggleCollapseStatus">{{ data.collapseStatus ? '展开' : '折叠'}}所有</el-button>
+    <el-button size="small" @click="importWords(allCheckedWords)">导入选中</el-button>
+    <el-button size="small" @click="importWords(uniqueWords)">导入全部</el-button>
     <el-dropdown size="small" split-button @command="handleCommand" style="margin-left: 10px;">
       更多
       <template #dropdown>
         <el-dropdown-menu>
-          <!-- <el-dropdown-item command=""></el-dropdown-item> -->
-          <el-dropdown-item command="collapse-all">折叠所有</el-dropdown-item>
-          <el-dropdown-item command="import-all">导入全部单词</el-dropdown-item>
+          <el-dropdown-item command="remove-known">移除已熟识</el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
@@ -36,6 +35,8 @@
 
 <script setup>
 import { reactive, defineProps, computed, watch, onMounted } from 'vue'
+import store from "@/store/index";
+import { add } from "@/api/index";
 
 const props = defineProps({
   words: {
@@ -56,11 +57,14 @@ const props = defineProps({
 const groupList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
 const data = reactive({
-  activeGroups: [],
-  uniqueWords: [],
+  activeGroups: [], // 展开分组
+  uniqueWords: [], // 已去重的所有数据
   wordsGroupList: [],
+  selectAll: true, // 全选标志
+  collapseStatus: true, //折叠标志
 });
 
+// 计算所有选中
 const allCheckedWords = computed(() => {
   return data.wordsGroupList.reduce((acc, item, index) => {
     return index === 1
@@ -80,36 +84,29 @@ onMounted(() => {
   init();
 });
 
-const handleSelectAll = () => {
+// 切换所有全选
+const toggleSelectAll = () => {
   for(let item of data.wordsGroupList){
-    item.checkedWords = [...item.words];
-    item.checkAll = true;
+    item.checkedWords = data.selectAll ? [...item.words] : [];
+    item.checkAll = data.selectAll;
     item.isIndeterminate = false;
   }
+  data.selectAll = !data.selectAll;
 }
 
-const handleExpandGroup = () => {
-  data.activeGroups = [...groupList];
-}
-
-const importSelected = () => {
-  //
+// 切换分组折叠
+const toggleCollapseStatus = () => {
+  data.activeGroups = data.collapseStatus ? [...groupList] : [];
+  data.collapseStatus = !data.collapseStatus;
 }
 
 const handleCommand = (command) => {
   switch (command) {
-    case "collapse-all":
-      data.activeGroups = [];
-      break;
-    case "import-all":
-      //
-      break;
-    default:
-      // statements_def
-      break;
+    //
   }
 }
 
+// 分组全选
 const handleCheckAllChange = (item) => {
   item.checkedWords = item.checkAll
     ? [...item.words]
@@ -117,6 +114,7 @@ const handleCheckAllChange = (item) => {
   item.isIndeterminate = false;
 };
 
+// 勾选每项
 const handleCheckedWordsChange = (item) => {
   let checkedCount = item.checkedWords.length,
     itemCount = item.words.length;
@@ -124,10 +122,28 @@ const handleCheckedWordsChange = (item) => {
   item.isIndeterminate = checkedCount > 0 && checkedCount < itemCount;
 };
 
+// 导入
+const importWords = (data) => {
+  if (!data.length) {
+    alert("请勾选后再操作");
+    return;
+  }
+  add({
+    user_id: store.state.user_id,
+    words: data,
+  }).then((res) => {
+    if (res.code === 200) {
+      alert("导入成功");
+    }
+  });
+};
+
+// 按字母分组
 const filterWords = (wordsArray, filterStr) => {
   return wordsArray.filter(item => item[0].toUpperCase() === filterStr);
 };
 
+// 去重
 const uniqueArray = (arr) =>  {
   return Array.from(new Set(arr))
 };
@@ -147,7 +163,10 @@ const init = () => {
     tempItem.group = groupList[i];
     tempItem.words = filterWords(data.uniqueWords, tempItem.group);
     if(tempItem.words.length){
-      data.wordsGroupList.push(tempItem);
+      data.wordsGroupList.push({
+        word: tempItem,
+        isDisable: false,
+      });
     }
   }
 };
