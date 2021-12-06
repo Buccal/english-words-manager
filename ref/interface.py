@@ -31,10 +31,11 @@ async def register(arg: User):
             "account": arg.account,
             "password": arg.password,
         })
-        known_words = db["KNOWN_WORDS"]
-        known_words.insert_one({
+        template_words = db["TEMPLATE_WORDS"]
+        user_words = db["USER_WORDS"]
+        user_words.insert_one({
             "user_id": str(result.inserted_id),
-            "words": [],
+            "words": list(template_words.find({}, { '_id': 0 })),
         })
         return {
             "data": str(result.inserted_id)
@@ -79,14 +80,15 @@ class Source(BaseModel):
 # 计算词频
 @app.post("/wordfrequency")
 async def cal_word_frequency(source: Source):
-    known_words = db["KNOWN_WORDS"]
+    user_words = db["USER_WORDS"]
     context = source.context.lower()
     for ch in '!"#$%&()*+,-./:;<=>?@[\\]^_‘{|}~0123456789“”':
         context = context.replace(ch, " ")
     words  = context.split()
     counts = {}
     if source.user_id == True:
-        result = known_words.find_one({"user_id": source.user_id})
+        user_words = user_words.find_one({"user_id": source.user_id})
+        result = [item['word'] for item in user_words.words]
         if(result == None):
             return {
                 "msg": "用户不存在"
@@ -121,44 +123,86 @@ class Words(BaseModel):
 # 批量添加熟词
 @app.post("/known_word/add")
 async def add_known_word(data: Words):
-    known_words = db["KNOWN_WORDS"]
-    result = known_words.find_one({"user_id": data.user_id})
+    user_words = db["USER_WORDS"]
+    result = user_words.find_one({"user_id": data.user_id})
     if(result == None):
         return {
             "msg": "用户不存在"
         }
-    known_words.update_one(
-        {"user_id": data.user_id},
-        {"$addToSet": {"words": {"$each": data.words}}}
-    )
+    for word in data.words:
+        if(not user_words.find_one({"user_id": data.user_id, "words.word": word})):
+            user_words.update(
+                { "user_id": data.user_id },
+                { "$push": { "words": { "word": word, "Group": word[0].upper(), "isKnown": True, "level": None } } },
+                True
+            )
+        else:
+            user_words.update(
+                { "user_id": data.user_id, "words.word": word },
+                { "$set": { "words.$.isKnown": True } }
+            )
     return {
         "msg": "添加熟词成功！"
     }
 
 # 获取熟词
 @app.get("/known_word/list/{user_id}")
-async def get_known_words(user_id: str):
-    known_words = db["KNOWN_WORDS"]
-    result = known_words.find_one({"user_id": user_id})
-    if(result == None):
+async def get_user_words(user_id: str):
+    user_words = db["USER_WORDS"]
+    user = user_words.find_one({"user_id": user_id})
+    if(user == None):
         return {
             "msg": "用户不存在"
         }
+    result = user_words.aggregate([
+        { "$match": { "user_id": user_id, "words.isKnown": True }},
+        { "$project": {
+            "_id": 0,
+            "words": {
+                "$filter": {
+                    "input": "$words",
+                    "as": "words",
+                    "cond": {
+                        "$eq": ["$$words.isKnown", True]
+                    }
+                }
+            }
+        }
+    }])
+    if(result == None):
+        return { "data": [] }
     return {
-        "data": result["words"]
+        "data": list(result)[0]["words"]
     }
 
 # 获取模板词库
-@app.get("/template_word/list/{level}")
-async def get_known_words(level: str):
-    template_words = db["TEMPLATE_WORDS"]
-    result = template_words.find_one({"level": level})
-    if(result == None):
+@app.get("/template_word/list/{user_id}/{level}")
+async def get_user_words(user_id: str, level: str):
+    user_words = db["USER_WORDS"]
+    user = user_words.find_one({"user_id": user_id})
+    if(user == None):
         return {
             "msg": "用户不存在"
         }
+    result = user_words.aggregate([
+        { "$match": { "user_id": user_id, "words.level": level }},
+        { "$project": {
+            "_id": 0,
+            "words": {
+                "$filter": {
+                    "input": "$words",
+                    "as": "words",
+                    "cond": {
+                        "$eq": ["$$words.level", level]
+                    }
+                }
+            }
+        }
+    }])
+    if(result == None):
+        return { "data": [] }
     return {
-        "data": result["words"]
+        "data": list(result)[0]["words"]
     }
 
 # @app.get("/")

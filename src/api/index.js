@@ -67,7 +67,7 @@ export function wordfrequency(data) {
 // 添加熟词
 export function add(data) {
   return request({
-    url: '/known_word/add',
+    url: '/user_word/add',
     method: 'post',
     data: data,
   })
@@ -76,7 +76,7 @@ export function add(data) {
 // 获取熟词列表
 export function getKnownWords(user_id) {
   return request({
-    url: '/known_word/list/' + user_id,
+    url: '/user_word/list/' + user_id,
     method: 'get',
   })
 }
