@@ -9,6 +9,7 @@
 <script setup>
 import { reactive, defineProps, onMounted } from "vue";
 import WordsGroup from "../components/WordsGroup";
+import store from "@/store/index";
 import { getTemplateWords } from "@/api/index";
 
 const props = defineProps({
@@ -26,7 +27,7 @@ const data = reactive({
 });
 
 onMounted(() => {
-  getTemplateWords(props.level).then((res) => {
+  getTemplateWords(store.state.user_id, props.level).then((res) => {
     if (res.code === 200) {
       data.wordsList = res.data;
     }

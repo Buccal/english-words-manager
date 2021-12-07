@@ -121,8 +121,8 @@ class Words(BaseModel):
     words: list
 
 # 批量添加熟词
-@app.post("/known_word/add")
-async def add_known_word(data: Words):
+@app.post("/user_words/set_known")
+async def add_user_word(data: Words):
     user_words = db["USER_WORDS"]
     result = user_words.find_one({"user_id": data.user_id})
     if(result == None):
@@ -146,7 +146,7 @@ async def add_known_word(data: Words):
     }
 
 # 获取熟词
-@app.get("/known_word/list/{user_id}")
+@app.get("/user_words/known_list/{user_id}")
 async def get_user_words(user_id: str):
     user_words = db["USER_WORDS"]
     user = user_words.find_one({"user_id": user_id})
@@ -169,14 +169,16 @@ async def get_user_words(user_id: str):
             }
         }
     }])
-    if(result == None):
+    tempRes = list(result)
+    if(tempRes == None):
         return { "data": [] }
+    print("111111111111111111111111111111111111111111111")
     return {
-        "data": list(result)[0]["words"]
+        "data": [item['word'] for item in tempRes[0]["words"]]
     }
 
 # 获取模板词库
-@app.get("/template_word/list/{user_id}/{level}")
+@app.get("/user_words/template_list/{user_id}/{level}")
 async def get_user_words(user_id: str, level: str):
     user_words = db["USER_WORDS"]
     user = user_words.find_one({"user_id": user_id})
@@ -208,9 +210,6 @@ async def get_user_words(user_id: str, level: str):
 # @app.get("/")
 # async def main():
 #     return {"message": "Hello , this is FastAPI."}
-
-
-
 
 
 if __name__ == '__main__':

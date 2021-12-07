@@ -25,8 +25,8 @@
         v-model="item.checkedWords"
         @change="handleCheckedWordsChange(item)"
       >
-        <el-checkbox v-for="word in item.words" :key="word" :label="word" style="width: 150px;">{{
-          word
+        <el-checkbox v-for="word in item.words" :key="word.word" :label="word.word" style="width: 150px;" :class="{ gray: word.isKnown}">{{
+          word.word
         }}</el-checkbox>
       </el-checkbox-group>
     </el-collapse-item>
@@ -58,7 +58,7 @@ const groupList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "
 
 const data = reactive({
   activeGroups: [], // 展开分组
-  uniqueWords: [], // 已去重的所有数据
+  originCheckedWords: [], // 初始已熟识的数据
   wordsGroupList: [],
   selectAll: true, // 全选标志
   collapseStatus: true, //折叠标志
@@ -140,43 +140,52 @@ const importWords = (data) => {
 
 // 按字母分组
 const filterWords = (wordsArray, filterStr) => {
-  return wordsArray.filter(item => item[0].toUpperCase() === filterStr);
+  return wordsArray.filter(item => item.Group === filterStr);
 };
 
 // 去重
-const uniqueArray = (arr) =>  {
-  return Array.from(new Set(arr))
-};
+// const uniqueArray = (arr) =>  {
+//   return Array.from(new Set(arr))
+// };
 
 const init = () => {
+  // debugger
   data.activeGroups = props.defaultGroup.split("");
-  data.uniqueWords = uniqueArray(props.words);
+  // data.uniqueWords = uniqueArray(props.words);
   data.wordsGroupList = []
+  data.originCheckedWords = props.words.filter(item => item.isKnown).map(item => item.word);
   for(let i=0; i<groupList.length; i++){
     let tempItem = {
       group: "",
       checkAll: false,
       isIndeterminate: false,
       words: [],
-      checkedWords: [],
     };
     tempItem.group = groupList[i];
-    tempItem.words = filterWords(data.uniqueWords, tempItem.group);
+    tempItem.words = filterWords(props.words, tempItem.group);
+    tempItem.checkedWords = tempItem.words.filter(item => item.isKnown).map(item => item.word);
     if(tempItem.words.length){
-      data.wordsGroupList.push({
-        word: tempItem,
-        isDisable: false,
-      });
+      data.wordsGroupList.push(tempItem);
     }
   }
+  // debugger
 };
 
 </script>
 
-<style type="text/css" scoped>
+<style>
 .operationGroup {
   margin-top: 20px;
   margin-bottom: 20px;
   text-align: right;
+}
+
+.gray > .is-checked + .el-checkbox__label {
+  color: lightgray !important;
+}
+
+.gray > .is-checked > .el-checkbox__inner {
+  background-color: lightgray !important;
+  border-color: lightgray !important;
 }
 </style>

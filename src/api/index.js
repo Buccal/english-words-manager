@@ -67,7 +67,7 @@ export function wordfrequency(data) {
 // 添加熟词
 export function add(data) {
   return request({
-    url: '/user_word/add',
+    url: '/user_words/set_known',
     method: 'post',
     data: data,
   })
@@ -76,7 +76,7 @@ export function add(data) {
 // 获取熟词列表
 export function getKnownWords(user_id) {
   return request({
-    url: '/user_word/list/' + user_id,
+    url: '/user_words/known_list/' + user_id,
     method: 'get',
   })
 }
@@ -110,9 +110,9 @@ export function getBooks(user_id) {
 }
 
 // 获取模板单词列表
-export function getTemplateWords(level) {
+export function getTemplateWords(user_id, level) {
   return request({
-    url: '/template_word/list/' + level,
+    url: '/user_words/template_list/' + user_id + "/" + level,
     method: 'get',
   })
 }
