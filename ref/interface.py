@@ -211,12 +211,6 @@ async def get_user_words(user_id: str, level: str):
 # async def main():
 #     return {"message": "Hello , this is FastAPI."}
 
-@app.get("/items/{item_id}")
-async def read_user_item(
-    item_id: str, needy: str, skip: int = 0, limit: Optional[int] = None, limit1: int = None
-):
-    item = {"item_id": item_id, "needy": needy, "skip": skip, "limit": limit}
-    return item
 
 if __name__ == '__main__':
     import uvicorn
