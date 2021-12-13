@@ -8,14 +8,12 @@ from pydantic import BaseModel
 fake_users_db = {
   "johndoe": {
     "username": "johndoe",
-    "full_name": "John Doe",
     "email": "johndoe@example.com",
     "hashed_password": "fakehashedsecret",
     "disabled": False,
   },
   "alice": {
     "username": "alice",
-    "full_name": "Alice Wonderson",
     "email": "alice@example.com",
     "hashed_password": "fakehashedsecret2",
     "disabled": True,
@@ -104,3 +102,5 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run("security:app", host="127.0.0.1", port=8000, reload=True)
+
+# https://github.com/oinsd/FastAPI-Learning-Example
