@@ -172,7 +172,6 @@ async def get_user_words(user_id: str):
     tempRes = list(result)
     if(tempRes == None):
         return { "data": [] }
-    print("111111111111111111111111111111111111111111111")
     return {
         "data": [item['word'] for item in tempRes[0]["words"]]
     }
