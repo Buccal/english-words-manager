@@ -14,6 +14,8 @@ from fastapi import Depends
 from model import TokenData, UserInDB, User
 from decrypt_data import decrypt_data
 from raise_error import raise_error
+from db_operation import db_query
+from config import USER_DB
 
 # 生成随机秘钥命令：openssl rand -hex 32
 SECRET_KEY = "9fb2c88349f6ecaf46fd904495a93d132eca5d8c4747ca6ea31910507ed0e8bc"# 密钥
@@ -38,9 +40,9 @@ def get_password_hash(password):
 
 # 获取用户
 def get_user(db_name, username: str):
+    user_dict = db_query(db_name, {"username": username})
     # 判断用户是否存在
-    if username in db:
-        user_dict = db[username]
+    if user_dict:
         # 创建用户模型
         return UserInDB(**user_dict) # *表示元组，**表示字典
 
@@ -74,7 +76,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = get_user("User", username=token_data.username)
+    user = get_user(USER_DB, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user

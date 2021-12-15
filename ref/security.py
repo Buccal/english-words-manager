@@ -1,24 +1,22 @@
 # -*- coding: UTF-8 -*-
 from fastapi import Depends, FastAPI
 
+# OAuth2PasswordRequestForm是一个类依赖项项，声明了如下的请求表单：username、password
 from fastapi.security import OAuth2PasswordRequestForm
 from model import Token, User
 from dependencies import authenticate_user, create_access_token, get_current_active_user
 from raise_error import raise_error
+from config import USER_DB
 
 app = FastAPI()
 
 # 用户数据（模拟）
 
-
 # 获取令牌
 @app.post("/login", response_model=Token)
-# OAuth2PasswordRequestForm是一个类依赖项项，声明了如下的请求表单：
-# - username
-# - password
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     # 获取并验证用户信息
-    user = authenticate_user("User", form_data.username, form_data.password)
+    user = authenticate_user(USER_DB, form_data.username, form_data.password)
     if not user:
         raise_error(401, "用户名或密码错误")
 
