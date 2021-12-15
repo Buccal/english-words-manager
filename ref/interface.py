@@ -3,7 +3,7 @@ from typing import Optional
 from starlette.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pymongo
-from config import *
+from config import MONGO_URL, MONGO_DB
 
 client = pymongo.MongoClient(MONGO_URL)
 db = client[MONGO_DB]
