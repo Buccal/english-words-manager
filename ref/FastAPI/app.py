@@ -43,9 +43,13 @@ class StudentModel(BaseModel):
     course: str = Field(...)
     gpa: float = Field(..., le=4.0)
 
+    # https://pydantic-docs.helpmanual.io/usage/model_config/
     class Config:
+        # 是否包含别名
         allow_population_by_field_name = True
+        # 是否允许任意类型
         arbitrary_types_allowed = True
+        # 自定义类型编码为JSON的方式
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {

@@ -2,7 +2,7 @@ import { ElMessageBox } from 'element-plus'
 import router from './router'
 import store from './store'
 
-const whiteList = ['/login', '/index', '/frequency']
+const whiteList = ['/known-words-manager', '/template-words/primary', '/template-words/middle', '/template-words/high', '/logout']
 
 router.beforeEach((to, from, next) => {
   if (store.getters.loginStatus) {
@@ -13,8 +13,8 @@ router.beforeEach((to, from, next) => {
     // }
     next();
   } else {
-    if (whiteList.indexOf(to.path) !== -1) {
-      next(); // 在免登录白名单，直接进入
+    if (whiteList.indexOf(to.path) == -1) {
+      next(); // 不在登录名单里，直接进入
     } else {
       ElMessageBox.confirm(
         '此页面需登录才能访问，请问是否登录',

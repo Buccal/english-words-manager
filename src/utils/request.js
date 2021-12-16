@@ -18,36 +18,41 @@ const server = axios.create()
 // 请求拦截器
 server.interceptors.request.use(
 	config => {
-		// 获取token
-		let token = localStorage.getItem("header");
-		// 判断是否存在token
-		if (token) {
-			// 每个http header都加上token
-			config.headers.token = `${token}`;
-		}
+		if(config.url === '/user/register' || config.url === '/user/login'){
+			config.data = "grant_type=password&username=" + config.data.username + "&password=" + encodeURIComponent(config.data.password)
+			config.headers["Content-Type"] = "application/x-www-form-urlencoded"
+		}else{
+			// 获取token
+			let token = localStorage.getItem("header");
+			// 判断是否存在token
+			if (token) {
+				// 每个http header都加上token
+				config.headers.token = `${token}`;
+			}
 
-		// get请求映射params参数
-		if (config.method === 'get' && config.params) {
-			// 拼接请求地址
-			let url = config.url + '?';
-			for (const propName of Object.keys(config.params)) {
-				const value = config.params[propName];
-				var part = encodeURIComponent(propName) + "=";
-				if (value !== null && typeof(value) !== "undefined") {
-					if (typeof value === 'object') {
-						for (const key of Object.keys(value)) {
-							let params = propName + '[' + key + ']';
-							var subPart = encodeURIComponent(params) + "=";
-							url += subPart + encodeURIComponent(value[key]) + "&";
+			// get请求映射params参数
+			if (config.method === 'get' && config.params) {
+				// 拼接请求地址
+				let url = config.url + '?';
+				for (const propName of Object.keys(config.params)) {
+					const value = config.params[propName];
+					var part = encodeURIComponent(propName) + "=";
+					if (value !== null && typeof(value) !== "undefined") {
+						if (typeof value === 'object') {
+							for (const key of Object.keys(value)) {
+								let params = propName + '[' + key + ']';
+								var subPart = encodeURIComponent(params) + "=";
+								url += subPart + encodeURIComponent(value[key]) + "&";
+							}
+						} else {
+							url += part + encodeURIComponent(value) + "&";
 						}
-					} else {
-						url += part + encodeURIComponent(value) + "&";
 					}
 				}
+				url = url.slice(0, -1);
+				config.params = {};
+				config.url = url;
 			}
-			url = url.slice(0, -1);
-			config.params = {};
-			config.url = url;
 		}
 
 		return config;

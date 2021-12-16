@@ -80,6 +80,7 @@ import { ref, reactive, toRefs } from "vue";
 import router from "@/router/index.js";
 import store from "@/store/index";
 import { register, login } from "@/api/index";
+import { encrypt } from "@/utils/jsencrypt";
 
 const ruleform = ref(null);
 
@@ -91,7 +92,13 @@ const form = reactive({
 // const { account, password } = toRefs(form)
 
 const handleRegister = () => {
-  register(form).then((res) => {
+  var a = encrypt("123456")
+  console.log(a)
+  // var a = encrypt(form.password)
+  register({
+    "username": form.account,
+    "password": a
+  }).then((res) => {
     if (res.code === 200 && res.data) {
       store.commit('$_setStorage', { user_id: res.data });
       router.push("/");
@@ -102,6 +109,7 @@ const handleRegister = () => {
 };
 
 const handleLogin = () => {
+  form.password = encrypt(form.password)
   login(form).then((res) => {
     if (res.code === 200 && res.data) {
       store.commit('$_setStorage', { user_id: res.data });

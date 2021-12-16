@@ -54,11 +54,12 @@ def decrypt(context, passphrase=PASSPHRASE):
 if __name__ == '__main__':
     # 创建非对称秘钥对
     # 也有密钥对在线生成网站：http://web.chacuo.net/netrsakeypair
+    # 参考文章：https://blog.csdn.net/yannanxiu/article/details/76436032
     create_rsa_key()
 
     """
     # 测试加密功能
-    test_info = "12asfsd.wqi"
+    test_info = "123123"
     en_test_info = encrypt(test_info.encode('utf-8'))
     print(en_test_info)
 

@@ -22,4 +22,5 @@ def decrypt_data(inputdata, passphrase=PASSPHRASE):
     # 当解密失败，会返回 sentinel
     ret = cipher_rsa.decrypt(data, sentinel)
 
-    return str(ret, encoding = "utf-8")
+    return ret
+    # return str(ret, encoding = "utf-8")
