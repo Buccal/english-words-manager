@@ -16,7 +16,7 @@ async def register(form_data: OAuth2PasswordRequestForm = Depends()):
     return register_user(USER_DB, form_data.username, form_data.password)
 
 # 获取令牌
-@app.post("/token", response_description="获取令牌", response_model=Token)
+@app.post("/user/login", response_description="获取令牌", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     # 获取并验证用户信息
     user = authenticate_user(USER_DB, form_data.username, form_data.password)

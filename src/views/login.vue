@@ -92,12 +92,9 @@ const form = reactive({
 // const { account, password } = toRefs(form)
 
 const handleRegister = () => {
-  var a = encrypt("123456")
-  console.log(a)
-  // var a = encrypt(form.password)
   register({
     "username": form.account,
-    "password": a
+    "password": encrypt(form.password)
   }).then((res) => {
     if (res.code === 200 && res.data) {
       store.commit('$_setStorage', { user_id: res.data });
@@ -109,8 +106,10 @@ const handleRegister = () => {
 };
 
 const handleLogin = () => {
-  form.password = encrypt(form.password)
-  login(form).then((res) => {
+  login({
+    "username": form.account,
+    "password": encrypt(form.password)
+  }).then((res) => {
     if (res.code === 200 && res.data) {
       store.commit('$_setStorage', { user_id: res.data });
       router.push("/");

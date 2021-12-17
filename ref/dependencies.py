@@ -30,7 +30,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30 # 默认访问令牌过期时间
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # oauth2_scheme-令牌对象; token: str = Depends(oauth2_scheme)后就是之前加密的令牌
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/user/login")
 
 
 # 验证密码: plain_password-普通密码; hashed_password-哈希密码
@@ -92,7 +92,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 # 获取当前激活用户
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
     if current_user.disabled:
-        raise_error(400, "账户冻结")
+        raise_error(400, {"msg": "账户冻结"})
         return None
     return current_user
 
@@ -104,7 +104,7 @@ def register_user(db_name: str, username: str, password: str):
             "hashed_password": get_password_hash(decrypt_data(password))
         }, True)
     else:
-        raise_error(409, "用户已存在")
+        raise_error(409, {"msg": "用户已存在"})
     new_user = get_user(db_name, username)
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
