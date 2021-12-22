@@ -15,9 +15,8 @@ from datetime import datetime, timedelta
 from typing import Optional
 from fastapi import Depends
 
-from model import TokenData, UserInDB, User
+from model import TokenData, UserInDB, User, CustomException
 from decrypt_data import decrypt_data
-from response import CustomException
 from db_operation import db_query, db_insert
 from config import USER_DB
 
@@ -70,7 +69,7 @@ def create_access_token(username: str, expires_delta:  Optional[timedelta] = tim
     expire = datetime.utcnow() + expires_delta
     to_encode.update({"exp": expire}) # {'sub': 用户名, 'exp': datetime.datetime类型时间}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    raise CustomException(code=200, data={"access_token": encoded_jwt, "token_type": "bearer"}, msg="获取令牌成功，默认有效事件为%s分钟"%ACCESS_TOKEN_EXPIRE_MINUTES)
 
 # 获取当前用户
 async def get_current_user(token: str = Depends(oauth2_scheme)):

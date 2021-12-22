@@ -3,17 +3,29 @@ from fastapi import Depends, FastAPI, Request
 
 # OAuth2PasswordRequestForm是一个类依赖项项，声明了如下的请求表单：username、password
 from fastapi.security import OAuth2PasswordRequestForm
-from model import Token, User
+from model import Token, User, CustomException
 from dependencies import authenticate_user, create_access_token, get_current_active_user, register_user
 from config import USER_DB
 
 from fastapi.responses import JSONResponse, Response
-from response import status_code_list, default_msg_list, CustomException
+from response_info import status_code_list, default_msg_list
+
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.exception_handler(CustomException)
-async def unicorn_exception_handler(request: Request, exc: CustomException):
+async def unicorn_exception_handler(request: Request, exc: CustomException = Depends()):
     return JSONResponse(
         status_code=status_code_list.get(exc.code, exc.code),
         content={
@@ -38,7 +50,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = create_access_token(user.username)
 
     # 返回Bearer令牌：访问令牌的字符串、令牌类型
-    return {"access_token": access_token, "token_type": "bearer"}
+    return 
 
 # 查询用户本人的信息
 @app.get("/user/me/", response_model=User)

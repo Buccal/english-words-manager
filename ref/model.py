@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, EmailStr
-from typing import Optional
+from typing import Optional, Union
 from bson import ObjectId
 
 # _id主键
@@ -68,3 +68,11 @@ class UpdateUser(BaseModel):
 # 用户输入数据模型
 class UserInDB(User):
     hashed_password: str = Field(...)
+
+# 自定义返回
+class CustomException(Exception):
+    # __init__用于创建类的实例的方法
+    def __init__(self, code: int, data: Union[list, dict, str], msg: Optional[str] = None):
+        self.code = code
+        self.data = data
+        self.msg = msg

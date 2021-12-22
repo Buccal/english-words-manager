@@ -1,6 +1,4 @@
 from fastapi import status
-from typing import Optional, Union
-
 status_code_list = {
     200: status.HTTP_200_OK,
     201: status.HTTP_201_CREATED,
@@ -20,9 +18,3 @@ default_msg_list = {
     404: "服务器无法根据客户端的请求找到资源（网页）",
     404: "服务器处理请求时发生了冲突",
 }
-
-class CustomException(Exception):
-    def __init__(self, code: int, data: Union[list, dict, str], msg: Optional[str] = None):
-        self.code = code
-        self.data = data
-        self.msg = msg
