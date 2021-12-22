@@ -17,7 +17,7 @@ from fastapi import Depends
 
 from model import TokenData, UserInDB, User
 from decrypt_data import decrypt_data
-from raise_error import raise_error
+from response import CustomException
 from db_operation import db_query, db_insert
 from config import USER_DB
 
@@ -56,9 +56,9 @@ def authenticate_user(db_name: str, username: str, password: str):
     user = get_user(db_name, username)
     # 如果用户不存在或者密码错误
     if not user:
-        raise_error(404, "用户不存在")
+        raise CustomException(code=404, data={ "username": username }, msg="用户不存在")
     if not verify_password(decrypt_data(password), user.hashed_password):
-        raise_error(401, "密码错误")
+        raise CustomException(code=401, data={ "username": username }, msg="密码错误")
     return user # <class '__main__.UserInDB'>
 
 # 创建访问令牌
@@ -79,8 +79,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
-            raise_error(401, "Could not validate credentials")
-            return None
+            raise CustomException(code=404, data={ "username": username }, msg="用户不存在")
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
@@ -92,8 +91,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 # 获取当前激活用户
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
     if current_user.disabled:
-        raise_error(400, {"msg": "账户冻结"})
-        return None
+        raise CustomException(code=400, data=jsonable_encoder(current_user), msg="账户冻结")
     return current_user
 
 def register_user(db_name: str, username: str, password: str):
@@ -104,10 +102,6 @@ def register_user(db_name: str, username: str, password: str):
             "hashed_password": get_password_hash(decrypt_data(password))
         }, True)
     else:
-        raise_error(409, {"msg": "用户已存在"})
+        raise CustomException(code=409, data={ "username": username }, msg="用户已存在")
     new_user = get_user(db_name, username)
-    return JSONResponse(
-        status_code=status.HTTP_201_CREATED,
-        content=jsonable_encoder({"body": new_user})
-    )
-    # return new_user
+    raise CustomException(code=201, data=jsonable_encoder(new_user), msg="用户创建成功")
