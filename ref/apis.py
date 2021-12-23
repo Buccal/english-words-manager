@@ -24,6 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 统一异常处理
 @app.exception_handler(CustomException)
 async def unicorn_exception_handler(request: Request, exc: CustomException = Depends()):
     return JSONResponse(
@@ -47,17 +48,41 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     user = authenticate_user(USER_DB, form_data.username, form_data.password)
 
     # 创建访问令牌
-    access_token = create_access_token(user.username)
-
-    # 返回Bearer令牌：访问令牌的字符串、令牌类型
-    return 
+    create_access_token(user.username)
 
 # 查询用户本人的信息
-@app.get("/user/me/", response_model=User)
+@app.get("/user/info", response_model=User)
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
 
-@app.get("/user/me/items/")
+# 计算词频
+@app.post("/wordsfrequency")
+async def cal_words_frequency(context: str, current_user: User = Depends(get_current_active_user)):
+    
+    words = separate_words(context)
+
+
+    user_words = db["USER_WORDS"]
+
+
+    if source.user_id == True:
+        user_words = user_words.find_one({"user_id": source.user_id})
+        result = [item['word'] for item in user_words.words]
+        if(result == None):
+            return {
+                "msg": "用户不存在"
+            }
+        exclude = result["words"]
+    else:
+        exclude = []
+    
+
+    return {
+        "data": items
+    }
+
+
+@app.get("/user/me/items")
 async def read_own_items(current_user: User = Depends(get_current_active_user)):
     return [{"item_id": "Foo", "owner": current_user.username}]
 

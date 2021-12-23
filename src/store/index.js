@@ -1,26 +1,28 @@
 import { createStore } from 'vuex'
 
-const key = 'user_id'
+const key = 'access_token'
 
 const store = createStore({
   state () {
     return {
-      user_id: localStorage.getItem(key) ? localStorage.getItem(key) : "",
+      access_token: "",
+      token_type: "",
     }
   },
   getters: {
     loginStatus: (state) => {
-      return Boolean(state.user_id);
+      return Boolean(state.access_token);
     }
   },
   mutations: {
     $_setStorage(state, payload) {
-      state.user_id = payload.user_id;
-      localStorage.setItem(key, payload.user_id);
+      state.access_token = payload.access_token;
+      state.token_type = payload.token_type;
+      // localStorage.setItem(key, payload.access_token);
     },
     $_removeStorage(state) {
-      state.user_id = "";
-      localStorage.removeItem(key);
+      state.access_token = "";
+      // localStorage.removeItem(key);
     }
   },
 });

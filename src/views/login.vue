@@ -97,7 +97,6 @@ const handleRegister = () => {
     "password": encrypt(form.password)
   }).then((res) => {
     if (res.code === 200 && res.data) {
-      store.commit('$_setStorage', { user_id: res.data });
       router.push("/");
     } else {
       alert("注册失败，原因为：" + res.msg);
@@ -111,7 +110,7 @@ const handleLogin = () => {
     "password": encrypt(form.password)
   }).then((res) => {
     if (res.code === 200 && res.data) {
-      store.commit('$_setStorage', { user_id: res.data });
+      store.commit('$_setStorage', res.data);
       router.push("/");
     } else {
       alert("登录失败，原因为：" + res.msg);

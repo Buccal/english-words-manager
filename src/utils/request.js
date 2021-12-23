@@ -3,6 +3,7 @@ import axios from 'axios'
 
 // 【非必要】 引入错误提示语
 import errorCode from '@/utils/errorCode'
+import store from "@/store/index"
 
 //设置默认请求头
 axios.defaults.headers['Content-Type'] = 'application/json';
@@ -22,12 +23,10 @@ server.interceptors.request.use(
 			config.data = "grant_type=password&username=" + config.data.username + "&password=" + encodeURIComponent(config.data.password)
 			config.headers["Content-Type"] = "application/x-www-form-urlencoded"
 		}else{
-			// 获取token
-			let token = localStorage.getItem("header");
 			// 判断是否存在token
-			if (token) {
+			if (store.getters.loginStatus) {
 				// 每个http header都加上token
-				config.headers.token = `${token}`;
+				config.headers.Authorization = store.state.token_type + " " + store.state.access_token;
 			}
 
 			// get请求映射params参数
