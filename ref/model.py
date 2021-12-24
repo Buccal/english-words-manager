@@ -76,3 +76,6 @@ class CustomException(Exception):
         self.code = code
         self.data = data
         self.msg = msg
+
+class Context(BaseModel):
+    content: str

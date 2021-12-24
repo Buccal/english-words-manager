@@ -55,5 +55,4 @@
 # # encode_password = "mO34nsfRHnyKj4tj4Mah4F5AzXRjFHhg/DtacwiJJRdmxyLsECkEKX57e0jaSKZPdFNtgpaW9q0ruODaIKVy8HnUFa2Gk1JwXjR1i1bS0w+CV9Iq2zkgkJkEp5yf/0oM95mkF4MQs/NKaQyEEoedeULghqgw0G+RSuJkK8x8Rm4="
 # # print(decrypt_data(encode_password))
 
-a = 1
-print("a = %s"%a)
+print(None or [])

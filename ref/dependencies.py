@@ -107,28 +107,23 @@ def register_user(db_name: str, username: str, password: str):
     raise CustomException(code=201, data={ "username": username }, msg="用户创建成功")
 
 # 文章分词
-def separate_words(content: str):
+def separate_words(context: str):
     formatted_txt = context.lower()
     for ch in '!"#$%&()*+,-./:;<=>?@[\\]^_‘{|}~0123456789“”':
         formatted_txt = formatted_txt.replace(ch, " ")
     return formatted_txt.split()
 
 # 计算词频
-def count_words(words: list, exclude: dict = {}):
+def count_words(words: list, exclude: list = []):
+    counts = { "known": {}, "new": {} }
     for word in words:
         if len(word) == 1:
             continue
         if word in exclude:
-            continue
-        counts[word] = counts.get(word,0) + 1
-    # 返回无序的对象数组
-    items = []
-    for key in counts.keys():
-        items.append({
-            "word": key,
-            "frequency": counts[key]
-        })
-
-        # 返回排序好的二维数组
+            counts["known"][word] = counts.get(word,0) + 1
+        else:
+            counts["new"][word] = counts.get(word,0) + 1
+    return counts
+    # 返回排序好的二维数组
     # items = list(counts.items())
     # items.sort(key=lambda x:x[1], reverse=True)

@@ -3,14 +3,15 @@ from fastapi import Depends, FastAPI, Request
 
 # OAuth2PasswordRequestForm是一个类依赖项项，声明了如下的请求表单：username、password
 from fastapi.security import OAuth2PasswordRequestForm
-from model import Token, User, CustomException
-from dependencies import authenticate_user, create_access_token, get_current_active_user, register_user
+from model import Token, User, CustomException, Context
+from dependencies import authenticate_user, create_access_token, get_current_active_user, register_user, separate_words, count_words
 from config import USER_DB
 
 from fastapi.responses import JSONResponse, Response
 from response_info import status_code_list, default_msg_list
 
 from fastapi.middleware.cors import CORSMiddleware
+from db_operation import db_query
 
 app = FastAPI()
 
@@ -57,36 +58,20 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 
 # 计算词频
 @app.post("/wordsfrequency")
-async def cal_words_frequency(context: str, current_user: User = Depends(get_current_active_user)):
-    
-    words = separate_words(context)
+async def cal_words_frequency(context: str = ""):
+# async def cal_words_frequency(current_user: User = Depends(get_current_active_user), context: str = ""):
+# async def cal_words_frequency(context: str, current_user: User = Depends(get_current_active_user)):
+    # context = "sadf slakreui asdfjka"
+    print("---------------------------------------------------------------------------------")
+    print(context)
+    # words = separate_words(context)
+    # exclude = db_query("USER_WORDS", {"username": current_user.username}) or []
+    # frequencyList = count_words(words, exclude)
+    # raise CustomException(code=200, data=frequencyList)
 
 
-    user_words = db["USER_WORDS"]
-
-
-    if source.user_id == True:
-        user_words = user_words.find_one({"user_id": source.user_id})
-        result = [item['word'] for item in user_words.words]
-        if(result == None):
-            return {
-                "msg": "用户不存在"
-            }
-        exclude = result["words"]
-    else:
-        exclude = []
-    
-
-    return {
-        "data": items
-    }
-
-
-@app.get("/user/me/items")
-async def read_own_items(current_user: User = Depends(get_current_active_user)):
-    return [{"item_id": "Foo", "owner": current_user.username}]
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run("security:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("apis:app", host="127.0.0.1", port=8000, reload=True)
 

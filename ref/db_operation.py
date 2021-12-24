@@ -31,6 +31,7 @@ def db_query(
     query_result = to_list_or_dict(result)
     return query_result
 
+# 插入
 def db_insert(
         db_name: str,
         documents,
