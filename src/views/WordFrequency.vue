@@ -29,43 +29,43 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
-import store from "@/store/index";
-import WordList from "../components/WordList";
-import { wordfrequency } from "@/api/index";
+import { ref, reactive } from 'vue'
+import store from '@/store/index'
+import WordList from '../components/WordList'
+import { wordfrequency } from '@/api/index'
 
-const ruleform = ref(null);
+const ruleform = ref(null)
 
 const form = reactive({
-  context: "",
-});
+  context: ''
+})
 
 const data = reactive({
   wordsList: [],
   buttonList: {
     newWordBook: true,
     setKnown: true,
-    setAllKnown: true,
+    setAllKnown: true
   }
-});
+})
 
 const onSubmit = () => {
   if (!form.context) {
-    alert("请输入内容");
-    return;
+    alert('请输入内容')
+    return
   }
   wordfrequency({
     user_id: store.state.user_id,
-    context: form.context,
+    context: form.context
   }).then((res) => {
     if (res.code === 200) {
       data.wordsList = res.data.map((item) => {
-        item.newFlag = true;
-        return item;
-      });
+        item.newFlag = true
+        return item
+      })
     }
-  });
-};
+  })
+}
 </script>
 
 <style lang="scss" scoped>

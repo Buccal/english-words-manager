@@ -17,8 +17,8 @@
 </template>
 
 <script setup>
-import TheHeader from "./components/TheHeader";
-import TheFooter from "./components/TheFooter";
+import TheHeader from './components/TheHeader'
+import TheFooter from './components/TheFooter'
 </script>
 
 <style lang="scss" scoped>

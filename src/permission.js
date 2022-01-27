@@ -11,24 +11,24 @@ router.beforeEach((to, from, next) => {
     // } else {
     //   // 判断store初始化信息是否完成，否则，dispatch actions
     // }
-    next();
+    next()
   } else {
-    if (whiteList.indexOf(to.path) == -1) {
-      next(); // 不在登录名单里，直接进入
+    if (whiteList.indexOf(to.path) === -1) {
+      next() // 不在登录名单里，直接进入
     } else {
       ElMessageBox.confirm(
         '此页面需登录才能访问，请问是否登录',
         '提示',
         {
           confirmButtonText: '登录',
-          cancelButtonText: '回首页',
+          cancelButtonText: '回首页'
         })
-      .then(() => {
-        next(`/login?redirect=${to.fullPath}`) // 否则全部重定向到登录页
-      })
-      .catch(() => {
-        console.log(next({ path: '/' }));
-      })
+        .then(() => {
+          next(`/login?redirect=${to.fullPath}`) // 否则全部重定向到登录页
+        })
+        .catch(() => {
+          console.log(next({ path: '/' }))
+        })
     }
   }
-});
+})

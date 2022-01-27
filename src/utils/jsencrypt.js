@@ -27,16 +27,15 @@ B5a5vDdh5oqJGiBCDFwEQ0KfEYfFJIXicE3YmVwf2paqKlTmXI15wjhKPvgw5Che
 XYdCs0f6Lamh`
 
 // 加密
-export function encrypt(content) {
+export function encrypt (content) {
   const encryptor = new JSEncrypt()
   encryptor.setPublicKey(publicKey) // 设置公钥
   return encryptor.encrypt(content) // 对数据进行加密
 }
 
 // 解密
-export function decrypt(content) {
+export function decrypt (content) {
   const encryptor = new JSEncrypt()
   encryptor.setPrivateKey(privateKey) // 设置私钥
   return encryptor.decrypt(content) // 对数据进行解密
 }
-

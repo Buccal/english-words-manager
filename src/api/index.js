@@ -5,7 +5,7 @@ import request from '@/utils/request'
 // 注册
 // 参数：account、password
 // 默认创建熟词库
-export function register(data) {
+export function register (data) {
   return request({
     url: '/user/register',
     method: 'post',
@@ -15,8 +15,8 @@ export function register(data) {
 
 // 登陆
 // 参数：account、password
-// 返回：user_id
-export function login(data) {
+// 返回：userId
+export function login (data) {
   return request({
     url: '/user/login',
     method: 'post',
@@ -25,17 +25,17 @@ export function login(data) {
 }
 
 // 注销（todo）
-// 参数：account、password、user_id
-export function delete_account(user_id) {
+// 参数：account、password、userId
+export function deleteAccount (userId) {
   return request({
-    url: '/user/delete' + user_id,
-    method: 'delete',
+    url: '/user/delete' + userId,
+    method: 'delete'
   })
 }
 
 // 关闭（todo）
-// 参数：account、password、user_id
-export function close(data) {
+// 参数：account、password、userId
+export function close (data) {
   return request({
     url: '/user/close',
     method: 'post',
@@ -44,8 +44,8 @@ export function close(data) {
 }
 
 // 清空重置（todo）
-// 参数：account、password、user_id
-export function reset(data) {
+// 参数：account、password、userId
+export function reset (data) {
   return request({
     url: '/user/reset',
     method: 'post',
@@ -54,7 +54,7 @@ export function reset(data) {
 }
 
 // 词频计算
-export function wordfrequency(data) {
+export function wordfrequency (data) {
   return request({
     url: '/wordfrequency',
     method: 'post',
@@ -65,54 +65,54 @@ export function wordfrequency(data) {
 // 词语管理
 
 // 添加熟词
-export function add(data) {
+export function add (data) {
   return request({
     url: '/user_words/set_known',
     method: 'post',
-    data: data,
+    data: data
   })
 }
 
 // 获取熟词列表
-export function getKnownWords(user_id) {
+export function getKnownWords (userId) {
   return request({
-    url: '/user_words/known_list/' + user_id,
-    method: 'get',
+    url: '/user_words/known_list/' + userId,
+    method: 'get'
   })
 }
 
 // 移除熟词（todo）
-export function remove(data) {
+export function remove (data) {
   return request({
     url: '/word/remove',
     method: 'delete',
-    data: data,
+    data: data
   })
 }
 
 // 将生词保存为单词本（todo）
 // 参数：用户id、单词本名称、单词列表、来源文本（可选项）
-export function create(data) {
+export function create (data) {
   return request({
     url: '/book/create',
     method: 'post',
-    data: data,
+    data: data
   })
 }
 
 // 获取所有单词本（todo）
 // 参数：用户id
-export function getBooks(user_id) {
+export function getBooks (userId) {
   return request({
-    url: '/book/list' + user_id,
-    method: 'get',
+    url: '/book/list' + userId,
+    method: 'get'
   })
 }
 
 // 获取模板单词列表
-export function getTemplateWords(user_id, level) {
+export function getTemplateWords (userId, level) {
   return request({
-    url: '/user_words/template_list/' + user_id + "/" + level,
-    method: 'get',
+    url: '/user_words/template_list/' + userId + '/' + level,
+    method: 'get'
   })
 }

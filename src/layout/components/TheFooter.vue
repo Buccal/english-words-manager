@@ -4,6 +4,6 @@
 
 <style scoped>
 #footer {
-	text-align: center;
+  text-align: center;
 }
 </style>

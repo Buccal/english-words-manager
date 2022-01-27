@@ -5,9 +5,9 @@ import 'element-plus/dist/index.css'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import App from './App.vue'
 import router from './router'
-import store from "./store";
-import HasPermission from "./directive/hasPermission";
-import "./permission";
+import store from './store'
+import HasPermission from './directive/hasPermission'
+import './permission'
 
 createApp(App)
   .use(router)

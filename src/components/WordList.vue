@@ -124,35 +124,37 @@
 </template>
 
 <script setup>
-import { ref, reactive, defineProps, computed, watch, onMounted } from "vue";
-import router from "@/router/index.js";
-import store from "@/store/index";
-import { add } from "@/api/index";
-import { Collection, Plus, TurnOff, ArrowDown } from "@element-plus/icons";
+import { ref, reactive, defineProps, computed, watch, onMounted } from 'vue'
+import router from '@/router/index.js'
+import store from '@/store/index'
+import { add } from '@/api/index'
+import { Collection, Plus, TurnOff, ArrowDown } from '@element-plus/icons'
 
 const props = defineProps({
   formData: {
     type: Array,
     required: true,
-    default() {
-      return [];
-    },
+    default () {
+      return []
+    }
   },
 
   showFrequency: {
     type: Boolean,
     required: false,
-    default: false,
+    default: false
   },
 
   buttonList: {
     type: Object,
     required: false,
-    default: {},
+    default () {
+      return {}
+    }
   }
-});
+})
 
-const currentPage = ref(1);
+const currentPage = ref(1)
 
 const defaultButtonList = {
   searchWord: true,
@@ -160,97 +162,97 @@ const defaultButtonList = {
   setKnown: false,
   setAllKnown: false,
   saveModify: false,
-  importWord: false,
-};
+  importWord: false
+}
 
 const data = reactive({
   tableData: [],
   showData: [],
   buttonSetting: {}
-});
+})
 const form = reactive({
-  search: "",
-});
+  search: ''
+})
 
 const total = computed(() => {
-  return data.tableData.length;
-});
+  return data.tableData.length
+})
 
 const filterNew = (value, row) => {
-  return row.newFlag === value;
-};
+  return row.newFlag === value
+}
 
 const saveKnownWords = () => {
-  let words = data.tableData.map((item) => {
+  const words = data.tableData.map((item) => {
     if (!item.newFlag) {
-      return item.word;
+      return item.word
     }
-  });
+  })
   if (!words.length) {
-    alert("请设置熟词");
-    return;
+    alert('请设置熟词')
+    return
   }
   add({
     user_id: store.state.user_id,
-    words: words,
+    words: words
   }).then((res) => {
     if (res.code === 200) {
     }
-  });
-};
+  })
+}
 
 watch(
   () => props.formData,
   () => {
-    init();
+    init()
   }
-);
+)
 
 onMounted(() => {
-  init();
-});
+  init()
+})
 
 const search = () => {
   if (!search) {
-    alert("请输入单词进行搜索");
-    return;
+    alert('请输入单词进行搜索')
+    return
   }
   data.showData = data.tableData.filter(
     (item) => item.word.indexOf(search) !== -1
-  );
-};
+  )
+}
 
 const setAllKnown = () => {
   data.showData.map((item) => {
-    item.newFlag = false;
-    return item;
-  });
-};
+    item.newFlag = false
+    return item
+  })
+}
 
 const handleCurrentChange = () => {
   data.showData = data.tableData.slice(
-    100 * (currentPage - 1),
-    100 * currentPage
-  );
-};
+    100 * (currentPage.value - 1),
+    100 * currentPage.value
+  )
+}
 
-const updateKnownWords = () => {};
+const updateKnownWords = () => {}
 
 const handleCommand = (command) => {
-  if (command === "primary" || command === "middle" || command === "high") {
-    router.push('/template-words/' + command);
+  if (command === 'primary' || command === 'middle' || command === 'high') {
+    router.push('/template-words/' + command)
   } else {
-    alert("暂不支持");
+    alert('暂不支持')
   }
-};
+}
 
 const init = () => {
-  data.tableData = JSON.parse(JSON.stringify(props.formData));
-  data.showData = data.tableData.slice(0, 100);
-  form.search = "";
-  currentPage.value = 1;
-  data.buttonSetting = Object.assign({}, defaultButtonList, props.buttonList);
-};
+  data.tableData = JSON.parse(JSON.stringify(props.formData))
+  data.showData = data.tableData.slice(0, 100)
+  form.search = ''
+  currentPage.value = 1
+  data.buttonSetting = Object.assign({}, defaultButtonList, props.buttonList)
+}
 
 </script>
 

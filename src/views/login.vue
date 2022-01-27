@@ -1,6 +1,9 @@
 <template>
   <el-row class="login">
-    <el-col :span="12" :offset="6">
+    <el-col
+      :span="12"
+      :offset="6"
+    >
       <el-tabs type="border-card">
         <el-tab-pane label="登录">
           <el-form
@@ -76,47 +79,45 @@
 </template>
 
 <script setup>
-import { ref, reactive, toRefs } from "vue";
-import router from "@/router/index.js";
-import store from "@/store/index";
-import { register, login } from "@/api/index";
-import { encrypt } from "@/utils/jsencrypt";
+import { ref, reactive } from 'vue'
+import router from '@/router/index.js'
+import store from '@/store/index'
+import { register, login } from '@/api/index'
+import { encrypt } from '@/utils/jsencrypt'
 
-const ruleform = ref(null);
+const ruleform = ref(null)
 
 const form = reactive({
-  account: "",
-  password: "",
-});
-
-// const { account, password } = toRefs(form)
+  account: '',
+  password: ''
+})
 
 const handleRegister = () => {
   register({
-    "username": form.account,
-    "password": encrypt(form.password)
+    username: form.account,
+    password: encrypt(form.password)
   }).then((res) => {
     if (res.code === 200 && res.data) {
-      router.push("/");
+      router.push('/')
     } else {
-      alert("注册失败，原因为：" + res.msg);
+      alert('注册失败，原因为：' + res.msg)
     }
-  });
-};
+  })
+}
 
 const handleLogin = () => {
   login({
-    "username": form.account,
-    "password": encrypt(form.password)
+    username: form.account,
+    password: encrypt(form.password)
   }).then((res) => {
     if (res.code === 200 && res.data) {
-      store.commit('$_setStorage', res.data);
-      router.push("/");
+      store.commit('$_setStorage', res.data)
+      router.push('/')
     } else {
-      alert("登录失败，原因为：" + res.msg);
+      alert('登录失败，原因为：' + res.msg)
     }
-  });
-};
+  })
+}
 </script>
 
 <style lang="scss" scoped>

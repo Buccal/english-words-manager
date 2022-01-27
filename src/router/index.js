@@ -1,16 +1,16 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Layout from "@/layout";
+import Layout from '@/layout'
 
 const routes = [
   {
     path: '',
     component: Layout,
-    redirect: "index",
+    redirect: 'index',
     children: [{
-      path: "index",
+      path: 'index',
       component: () => import('@/views/Home.vue'),
-      name: "首页",
-      meta: { title: "首页", icon: "dashboard", noCache: true, affix: true }
+      name: '首页',
+      meta: { title: '首页', icon: 'dashboard', noCache: true, affix: true }
     },
     {
       path: 'frequency',
@@ -20,7 +20,7 @@ const routes = [
     {
       path: 'known-words-manager',
       name: 'KnownWordsManager',
-      component: () => import('@/views/KnownWordsManager.vue'),
+      component: () => import('@/views/KnownWordsManager.vue')
     },
     {
       path: 'template-words/:level',
@@ -31,14 +31,14 @@ const routes = [
   {
     path: '/logo',
     name: 'logo',
-    redirect: "index",
-    component: () => import('@/views/Home.vue'),
+    redirect: 'index',
+    component: () => import('@/views/Home.vue')
   },
   {
     path: '/logout',
     name: 'logout',
-    redirect: "index",
-    component: () => import('@/views/Home.vue'),
+    redirect: 'index',
+    component: () => import('@/views/Home.vue')
   },
   // {
   //   path: "/",
