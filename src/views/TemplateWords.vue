@@ -10,7 +10,7 @@
 import { reactive, defineProps, onMounted } from 'vue'
 import WordsGroup from '../components/WordsGroup'
 import store from '@/store/index'
-import { getTemplateWords } from '@/api/index'
+import { getTemplateWords } from '@/api'
 
 const props = defineProps({
   level: {

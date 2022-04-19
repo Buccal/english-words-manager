@@ -230,6 +230,7 @@
 import { computed } from 'vue'
 import router from '@/router/index'
 import store from '@/store/index'
+import { removeToken, removeTokenType } from '@/utils/auth'
 
 const showLogin = computed(() => {
   return !store.getters.loginStatus
@@ -238,6 +239,8 @@ const showLogin = computed(() => {
 const handleSelect = (key, keyPath) => {
   if (key === '/logout') {
     store.commit('$_removeStorage')
+    removeToken()
+    removeTokenType()
     window.location.reload()
   }
 }

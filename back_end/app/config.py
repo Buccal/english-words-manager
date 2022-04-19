@@ -1,7 +1,8 @@
 # MongoDB
 MONGO_URL = 'localhost'
-MONGO_DB = 'WordsManager'
-USER_DB = 'USER'
+MONGO_DB = 'Words_Manager'
+WORD_DB = 'word'
+USER_DB = 'user'
 
 # RSA
 PASSPHRASE = "124824"

@@ -5,6 +5,8 @@ import axios from 'axios'
 import errorCode from '@/utils/errorCode'
 import store from '@/store/index'
 
+import { getToken, getTokenType } from '@/utils/auth'
+
 // 设置默认请求头
 axios.defaults.headers['Content-Type'] = 'application/json'
 
@@ -26,7 +28,7 @@ server.interceptors.request.use(
       // 判断是否存在token
       if (store.getters.loginStatus) {
         // 每个http header都加上token
-        config.headers.Authorization = store.state.token_type + ' ' + store.state.access_token
+        config.headers.Authorization = getTokenType() + ' ' + getToken()
       }
 
       // get请求映射params参数
@@ -35,12 +37,12 @@ server.interceptors.request.use(
         let url = config.url + '?'
         for (const propName of Object.keys(config.params)) {
           const value = config.params[propName]
-          var part = encodeURIComponent(propName) + '='
+          let part = encodeURIComponent(propName) + '='
           if (value !== null && typeof (value) !== 'undefined') {
             if (typeof value === 'object') {
               for (const key of Object.keys(value)) {
                 const params = propName + '[' + key + ']'
-                var subPart = encodeURIComponent(params) + '='
+                let subPart = encodeURIComponent(params) + '='
                 url += subPart + encodeURIComponent(value[key]) + '&'
               }
             } else {
@@ -57,7 +59,7 @@ server.interceptors.request.use(
     return config
   },
   err => {
-    this.$router.push('/login')
+    this.$router.push('/login').then(() => {})
     return Promise.reject(err)
   })
 
@@ -80,19 +82,18 @@ server.interceptors.response.use(function (res) {
         // 登陆后回到当前页面
         redirect: this.$router.currentRoute.fullPath
       }
-    })
-  } else if (rtn.code !== 200) {
+    }).then(() => {})
+  } else if (!/^2/.test(rtn.code)) {
     return Promise.reject(new Error(rtn.msg))
   }
   return rtn
 }, function (error) {
-  let { message } = error
-  if (message === 'Network Error') {
-    message = '后端接口连接异常'
-  } else if (message.includes('timeout')) {
-    message = '系统接口请求超时'
-  } else if (message.includes('Request failed with status code')) {
-    message = '系统接口' + message.substr(message.length - 3) + '异常'
+  if (error.message === 'Network Error') {
+    error.message = '后端接口连接异常'
+  } else if (error.message.includes('timeout')) {
+    error.message = '系统接口请求超时'
+  } else if (error.message.includes('Request failed with status code')) {
+    error.message = '系统接口' + error.message.substr(error.message.length - 3) + '异常'
   }
   return Promise.reject(error)
 })

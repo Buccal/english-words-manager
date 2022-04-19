@@ -41,15 +41,6 @@ def get_password_hash(password: str):
     # 将JSON对象编码为密集且没有空格的长字符串，相同密码可以转成不同的字符串，但验证都能通过
     return pwd_context.hash(password)
 
-# 获取用户
-def get_user(db_name: str, username: str):
-    user_dict = db_query(db_name, {"username": username})
-    # 判断用户是否存在
-    if not user_dict:
-        return None
-    # 创建用户模型
-    return UserInDB(**user_dict) # *表示元组，**表示字典
-
 # 验证用户，成功返回用户信息
 def authenticate_user(db_name: str, username: str, password: str):
     user = get_user(db_name, username)
@@ -70,7 +61,7 @@ def create_access_token(username: str, expires_delta:  Optional[timedelta] = tim
     to_encode.update({"exp": expire}) # {'sub': 用户名, 'exp': datetime.datetime类型时间}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     # 返回Bearer令牌：访问令牌的字符串、令牌类型
-    raise CustomException(code=200, data={"access_token": encoded_jwt, "token_type": "Bearer"}, msg="获取令牌成功，默认有效时间为%s分钟"%ACCESS_TOKEN_EXPIRE_MINUTES)
+    raise CustomException(code=200, data={"access_token": encoded_jwt, "token_type": "Bearer", }, msg="获取令牌成功，默认有效时间为%s分钟"%ACCESS_TOKEN_EXPIRE_MINUTES)
 
 # 获取当前用户
 async def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -94,12 +85,21 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
         raise CustomException(code=400, data=jsonable_encoder(current_user), msg="账户冻结")
     return current_user
 
+# 获取用户
+def get_user(db_name: str, username: str):
+    user_dict = db_query(db_name, {"username": username})
+    # 判断用户是否存在
+    if not user_dict:
+        return None
+    # 创建用户模型
+    return UserInDB(**user_dict) # *表示元组，**表示字典
+
 # 用户注册
-def register_user(db_name: str, username: str, password: str):
+def register_user(db_name: str, user: UserInDB):
     existed_user = get_user(db_name, username)
     if not existed_user:
         db_insert(db_name, {
-            "username": username,
+            "user_name": username,
             "hashed_password": get_password_hash(decrypt_data(password))
         }, True)
     else:
@@ -120,10 +120,26 @@ def count_words(words: list, exclude: list = []):
         if len(word) == 1:
             continue
         if word in exclude:
-            counts["known"][word] = counts.get(word,0) + 1
+            counts["known"][word] = counts["known"].get(word,0) + 1
         else:
-            counts["new"][word] = counts.get(word,0) + 1
-    return counts
+            counts["new"][word] = counts["new"].get(word,0) + 1
+#     vue组件有自动排序，取消排序
+#     counts["known"] = dict(sorted(counts["known"].items(), key=lambda x: x[1], reverse=True))
+#     counts["new"] = dict(sorted(counts["new"].items(), key=lambda x: x[1], reverse=True))
+    list = []
+    for key in counts["known"]:
+        list.append({
+            "word": key,
+            "count": counts["known"].get(key),
+            "isNew": False,
+        })
+    for key in counts["new"]:
+        list.append({
+            "word": key,
+            "count": counts["new"].get(key),
+            "isNew": True,
+        })
+    return list
     # 返回排序好的二维数组
     # items = list(counts.items())
     # items.sort(key=lambda x:x[1], reverse=True)

@@ -4,20 +4,21 @@
       :span="12"
       :offset="6"
     >
-      <el-tabs type="border-card">
-        <el-tab-pane label="登录">
+      <el-tabs type="border-card" v-model="data.activeName">
+        <el-tab-pane label="登录" name="login">
           <el-form
             label-width="120px"
-            ref="ruleform"
+            ref="loginForm"
             :model="form"
+            :rules="rules"
             class="form"
           >
             <el-form-item
               label="账号："
-              prop="account"
+              prop="username"
             >
               <el-input
-                v-model="form.account"
+                v-model="form.username"
                 type="text"
               ></el-input>
             </el-form-item>
@@ -39,19 +40,20 @@
             </div>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="注册">
+        <el-tab-pane label="注册"  name="register">
           <el-form
             label-width="120px"
-            ref="ruleform"
+            ref="registerForm"
             :model="form"
+            :rules="rules"
             class="form"
           >
             <el-form-item
               label="账号："
-              prop="account"
+              prop="username"
             >
               <el-input
-                v-model="form.account"
+                v-model="form.username"
                 type="text"
               ></el-input>
             </el-form-item>
@@ -79,43 +81,60 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue'
 import router from '@/router/index.js'
 import store from '@/store/index'
-import { register, login } from '@/api/index'
+import { register, login } from '@/api'
 import { encrypt } from '@/utils/jsencrypt'
+import { setToken, setTokenType } from '@/utils/auth'
+import { ElMessage } from 'element-plus'
 
-const ruleform = ref(null)
+let data = reactive({
+  activeName: "login"
+})
 
 const form = reactive({
-  account: '',
-  password: ''
+  username: '',
+  password: '',
+})
+
+const rules = reactive({
+  username: [{
+    required: true,
+    message: '请输入用户名',
+    trigger: 'blur'
+  }],
+  password: [{
+    required: true,
+    message: '请输入密码',
+    trigger: 'blur'
+  }],
 })
 
 const handleRegister = () => {
   register({
-    username: form.account,
+    username: form.username,
     password: encrypt(form.password)
-  }).then((res) => {
-    if (res.code === 200 && res.data) {
-      router.push('/')
-    } else {
-      alert('注册失败，原因为：' + res.msg)
-    }
+  }).then(() => {
+    ElMessage.success("注册成功")
+    data.activeName = "login"
+  }).catch(err=>{
+    ElMessage.error('注册失败，原因为：' + err.msg)
   })
 }
 
 const handleLogin = () => {
   login({
-    username: form.account,
+    username: form.username,
     password: encrypt(form.password)
   }).then((res) => {
-    if (res.code === 200 && res.data) {
-      store.commit('$_setStorage', res.data)
-      router.push('/')
-    } else {
-      alert('登录失败，原因为：' + res.msg)
-    }
+    store.commit('$_setStorage', res.data)
+    setToken(res.data.access_token)
+    setTokenType(res.data.token_type)
+    ElMessage.success("登录成功")
+    router.push('/')
+  }).catch(err => {
+    ElMessage.error('登录失败，原因为：' + err.msg)
   })
 }
 </script>

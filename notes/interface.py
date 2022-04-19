@@ -1,3 +1,5 @@
+# 旧版接口代码
+
 from fastapi import FastAPI
 from typing import Optional
 from starlette.middleware.cors import CORSMiddleware
@@ -25,24 +27,25 @@ class User(BaseModel):
 # 用户注册
 @app.post("/user/register")
 async def register(arg: User):
-    users = db["USER"]
-    if(users.find_one({"account": arg.account}) == None):
-        result = users.insert_one({
-            "account": arg.account,
-            "password": arg.password,
-        })
-        template_words = db["TEMPLATE_WORDS"]
-        user_words = db["USER_WORDS"]
-        user_words.insert_one({
-            "user_id": str(result.inserted_id),
-            "words": list(template_words.find({}, { '_id': 0 })),
-        })
-        return {
-            "data": str(result.inserted_id)
-        }
-    return {
-        "msg": "账户名称重复"
-    }
+    print(arg)
+    # users = db["USER"]
+    # if(users.find_one({"account": arg.account}) == None):
+    #     result = users.insert_one({
+    #         "account": arg.account,
+    #         "password": arg.password,
+    #     })
+    #     template_words = db["TEMPLATE_WORDS"]
+    #     user_words = db["USER_WORDS"]
+    #     user_words.insert_one({
+    #         "user_id": str(result.inserted_id),
+    #         "words": list(template_words.find({}, { '_id': 0 })),
+    #     })
+    #     return {
+    #         "data": str(result.inserted_id)
+    #     }
+    # return {
+    #     "msg": "账户名称重复"
+    # }
 
 # 用户登录
 @app.post("/user/login")

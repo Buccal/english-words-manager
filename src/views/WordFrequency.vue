@@ -1,7 +1,7 @@
 <template>
-  <div class="wordfrequency">
+  <div class="wordFrequency">
     <el-form
-      ref="ruleform"
+      ref="ruleForm"
       :model="form"
       label-width="120px"
       label-position="top"
@@ -32,9 +32,9 @@
 import { ref, reactive } from 'vue'
 import store from '@/store/index'
 import WordList from '../components/WordList'
-import { wordfrequency } from '@/api/index'
+import { wordFrequency } from '@/api'
 
-const ruleform = ref(null)
+const ruleForm = ref(null)
 
 const form = reactive({
   context: ''
@@ -54,15 +54,11 @@ const onSubmit = () => {
     alert('请输入内容')
     return
   }
-  wordfrequency({
-    user_id: store.state.user_id,
-    context: form.context
+  wordFrequency({
+    content: form.context.replace(/\n/, " ")
   }).then((res) => {
     if (res.code === 200) {
-      data.wordsList = res.data.map((item) => {
-        item.newFlag = true
-        return item
-      })
+      data.wordsList = res.data
     }
   })
 }

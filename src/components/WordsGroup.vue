@@ -203,7 +203,6 @@ const filterWords = (wordsArray, filterStr) => {
 // };
 
 const init = () => {
-  // debugger
   data.activeGroups = props.defaultGroup.split('')
   // data.uniqueWords = uniqueArray(props.words);
   data.wordsGroupList = []
@@ -226,7 +225,6 @@ const init = () => {
       data.wordsGroupList.push(tempItem)
     }
   }
-  // debugger
 }
 </script>
 

@@ -70,8 +70,7 @@
     </el-form>
     <el-table
       :data="data.showData"
-      :default-sort="{prop: 'frequency', order: 'descending'}"
-      border
+      :default-sort="{prop: 'count', order: 'descending'}"
       stripe
     >
       <el-table-column align="center" type="selection" width="55" />
@@ -86,14 +85,14 @@
         sortable
       ></el-table-column>
       <el-table-column align="center"
-        prop="frequency"
+        prop="count"
         label="词频"
         v-if="props.showFrequency"
         sortable
       ></el-table-column>
       <el-table-column align="center"
         label="是否为生词"
-        prop="newFlag"
+        prop="isNew"
         :filters="[
           { text: '生词', value: true },
           { text: '熟词', value: false },
@@ -104,7 +103,7 @@
       >
         <template #default="scope">
           <el-switch
-            v-model="scope.row.newFlag"
+            v-model="scope.row.isNew"
             active-color="#13ce66"
             inactive-color="#ff4949"
           >
@@ -179,12 +178,12 @@ const total = computed(() => {
 })
 
 const filterNew = (value, row) => {
-  return row.newFlag === value
+  return row.isNew === value
 }
 
 const saveKnownWords = () => {
   const words = data.tableData.map((item) => {
-    if (!item.newFlag) {
+    if (!item.isNew) {
       return item.word
     }
   })
@@ -213,18 +212,16 @@ onMounted(() => {
 })
 
 const search = () => {
-  if (!search) {
+  if (!form.search) {
     alert('请输入单词进行搜索')
     return
   }
-  data.showData = data.tableData.filter(
-    (item) => item.word.indexOf(search) !== -1
-  )
+  data.showData = data.tableData.filter(item => item.word.indexOf(form.search) !== -1)
 }
 
 const setAllKnown = () => {
   data.showData.map((item) => {
-    item.newFlag = false
+    item.isNew = false
     return item
   })
 }
@@ -267,5 +264,9 @@ const init = () => {
   & .el-button{
     padding: 8px 15px;
   }
+}
+
+/deep/ .el-table .el-table__cell {
+  padding: 0;
 }
 </style>

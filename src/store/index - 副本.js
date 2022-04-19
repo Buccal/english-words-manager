@@ -49,7 +49,7 @@ const store = createStore({
   mutations: {
     // 必须是同步函数
     increment (state, payload) {
-      state.count += payloadn.amount
+      state.count += payload.amount
     },
     /*
     传参叫提交载荷（payload），一般是个对象，更易读

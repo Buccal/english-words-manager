@@ -1,14 +1,14 @@
 import store from '@/store/index'
 
-const permiList = {
+const permissionList = {
   visitor: [],
-  user: ['frequency-operater', 'words-manager', 'user-info'],
-  vip: ['frequency-operater', 'words-manager', 'user-info'],
-  admin: ['frequency-operater', 'words-manager', 'user-info']
+  user: ['frequency-operator', 'words-manager', 'user-info'],
+  vip: ['frequency-operator', 'words-manager', 'user-info'],
+  admin: ['frequency-operator', 'words-manager', 'user-info']
 }
 
 function changeHasPermission (el, binding) {
-  if (permiList[getUserRole()].indexOf(binding.value) === -1) {
+  if (permissionList[getUserRole()].indexOf(binding.value) === -1) {
     el.parentNode && el.parentNode.removeChild(el)
   }
 

@@ -2,9 +2,12 @@ import request from '@/utils/request'
 
 // 用户相关
 
-// 注册
-// 参数：account、password
-// 默认创建熟词库
+/**
+ * 用户注册
+ * @param {Object} data - 请求的url地址
+ * @param {String} data.account - 账号
+ * @param {String} data.password - 密码
+ */
 export function register (data) {
   return request({
     url: '/user/register',
@@ -13,9 +16,15 @@ export function register (data) {
   })
 }
 
-// 登陆
-// 参数：account、password
-// 返回：userId
+
+/**
+ * 用户登录
+ * @param {Object} data - 请求的url地址
+ * @param {String} data.account - 账号
+ * @param {String} data.password - 密码
+ * @returns {Object} res
+ * @returns {Number} res.userId
+ */
 export function login (data) {
   return request({
     url: '/user/login',
@@ -24,7 +33,21 @@ export function login (data) {
   })
 }
 
-// 注销（todo）
+/**
+ * 获取用户的基本信息
+ * @returns {Object} res
+ * @returns {String} res.data.account
+ * @returns {String} res.data.email
+ * @returns {Boolean} res.data.disabled
+ */
+export function getUserInfo () {
+  return request({
+    url: '/user/info',
+    method: 'get',
+  })
+}
+
+// 注销（Todo）
 // 参数：account、password、userId
 export function deleteAccount (userId) {
   return request({
@@ -33,7 +56,7 @@ export function deleteAccount (userId) {
   })
 }
 
-// 关闭（todo）
+// 关闭（Todo）
 // 参数：account、password、userId
 export function close (data) {
   return request({
@@ -43,7 +66,7 @@ export function close (data) {
   })
 }
 
-// 清空重置（todo）
+// 清空重置（Todo）
 // 参数：account、password、userId
 export function reset (data) {
   return request({
@@ -53,10 +76,14 @@ export function reset (data) {
   })
 }
 
-// 词频计算
-export function wordfrequency (data) {
+/**
+ * 计算词频
+ * @param {Object} data
+ * @param {String} data.content - 英文文本
+ */
+export function wordFrequency (data) {
   return request({
-    url: '/wordfrequency',
+    url: '/wordFrequency',
     method: 'post',
     data: data
   })
@@ -64,7 +91,11 @@ export function wordfrequency (data) {
 
 // 词语管理
 
-// 添加熟词
+/**
+ * 添加已认识的单词
+ * @param {Object} data
+ * @param {String} data.content - 英文文本
+ */
 export function add (data) {
   return request({
     url: '/user_words/set_known',
@@ -73,7 +104,10 @@ export function add (data) {
   })
 }
 
-// 获取熟词列表
+/**
+ * 获取熟词列表
+ * @param {String} userId
+ */
 export function getKnownWords (userId) {
   return request({
     url: '/user_words/known_list/' + userId,
@@ -81,7 +115,7 @@ export function getKnownWords (userId) {
   })
 }
 
-// 移除熟词（todo）
+// 移除熟词（Todo）
 export function remove (data) {
   return request({
     url: '/word/remove',
@@ -90,7 +124,7 @@ export function remove (data) {
   })
 }
 
-// 将生词保存为单词本（todo）
+// 将生词保存为单词本（Todo）
 // 参数：用户id、单词本名称、单词列表、来源文本（可选项）
 export function create (data) {
   return request({
@@ -100,7 +134,7 @@ export function create (data) {
   })
 }
 
-// 获取所有单词本（todo）
+// 获取所有单词本（Todo）
 // 参数：用户id
 export function getBooks (userId) {
   return request({

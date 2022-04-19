@@ -1,17 +1,25 @@
 import { ElMessageBox } from 'element-plus'
 import router from './router'
 import store from './store'
+import { removeToken, removeTokenType } from "@/utils/auth";
 
 const whiteList = ['/known-words-manager', '/template-words/primary', '/template-words/middle', '/template-words/high', '/logout']
 
 router.beforeEach((to, from, next) => {
   if (store.getters.loginStatus) {
-    // if (to.path === '/login') {
-    //   next({ path: '/' })
-    // } else {
-    //   // 判断store初始化信息是否完成，否则，dispatch actions
-    // }
-    next()
+    if (to.path === '/login') {
+      next({ path: '/' })
+    } else {
+      // 获取用户信息，并测试令牌是否过期
+      store.dispatch('GetInfo').then(() => {
+        next()
+      }).catch(() => {
+        store.commit('$_removeStorage')
+        removeToken()
+        removeTokenType()
+        next({ path: '/login' })
+      })
+    }
   } else {
     if (whiteList.indexOf(to.path) === -1) {
       next() // 不在登录名单里，直接进入
