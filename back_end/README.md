@@ -1,7 +1,7 @@
 ## 启动
 1. 进入`init`目录，运行以下命令初始化数据库
- - `python setup_user.py`
- - `python setup_word.py`
+   - `python setup_user.py`
+   - `python setup_word.py`
 2. 进入`app`目录，运行`python main.py`启动接口
 
 ## 目录结构
@@ -30,3 +30,68 @@
 
 ## 参考
 [Swagger UI](http://127.0.0.1:8000/docs)
+
+## 学习笔记
+
+### 如何使用BaseModel
+
+1. 基本语法
+```python
+from pydantic import BaseModel
+
+class STRUCTURE_NAME(BaseModel):
+    FIELD: TYPE = DEFAULT_VALUE
+```
+
+2. 常见数据类型
+```python
+from pydantic import BaseModel, Field, EmailStr
+
+class Parent(BaseModel):
+    mom: str
+    dad: str
+
+class Kid(BaseModel):
+    name: str
+    age: int
+    number: long
+    hobby: list[str]
+    email: EmailStr
+    parent: Parent
+```
+
+3. 可选值、默认值
+```python
+class STRUCTURE_NAME(BaseModel):
+    name1: str = None
+    name2: Optional[str]
+    name3: Optional[str] = None
+print(STRUCTURE_NAME())
+```
+输出：`name1=None name2=None name3=None`
+
+4. 传参
+```python
+class Animal(BaseModel):
+    hasTail: bool = False
+
+class Cat(Animal):
+	name: str = "mimi"
+
+print(Cat(hasTail = True, name = "Kitty")) # hasTail=True name='Kitty'
+print(Cat(**{ "hasTail": True, "name": "Kitty"})) # hasTail=True name='Kitty'
+print(Cat(**{ "hasTail": True}, name = "Kitty")) # hasTail=True name='Kitty'
+```
+
+
+5. 对字段进行校验
+```python
+from pydantic import BaseModel, Field
+class Hoo(BaseModel):
+    name: str = Field("book", description="name must be less than 10", title="book name", max_length=10)
+    price: int = Field(20, gt=0, description="price must be greater than 0", title="good price")
+
+print(Hoo(price = -50)) #error
+print(Hoo(name = "popular books")) #error
+```
+
