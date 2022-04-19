@@ -65,6 +65,8 @@ server.interceptors.request.use(
 
 // 响应拦截器
 server.interceptors.response.use(function (res) {
+  console.log("hahahaha")
+  debugger
   const rtn = res.data
 
   rtn.code = res.status

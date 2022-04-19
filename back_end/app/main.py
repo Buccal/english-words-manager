@@ -17,6 +17,7 @@ app = FastAPI()
 
 origins = ["*"]
 
+# 允许跨域
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

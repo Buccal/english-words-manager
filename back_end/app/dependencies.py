@@ -95,12 +95,15 @@ def get_user(db_name: str, username: str):
     return UserInDB(**user_dict) # *表示元组，**表示字典
 
 # 用户注册
-def register_user(db_name: str, user: UserInDB):
+def register_user(db_name: str, username: str, password:str):
     existed_user = get_user(db_name, username)
     if not existed_user:
         db_insert(db_name, {
-            "user_name": username,
-            "hashed_password": get_password_hash(decrypt_data(password))
+            "username": username,
+            "hashed_password": get_password_hash(decrypt_data(password)),
+            "email": None,
+            "words": [],
+            "status": "1",
         }, True)
     else:
         raise CustomException(code=409, data={ "username": username }, msg="用户已存在")

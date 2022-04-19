@@ -134,6 +134,8 @@ const handleLogin = () => {
     ElMessage.success("登录成功")
     router.push('/')
   }).catch(err => {
+    console.log(err)
+    debugger
     ElMessage.error('登录失败，原因为：' + err.msg)
   })
 }

@@ -23,7 +23,7 @@ class TokenData(BaseModel):
 # 用户基础模型：响应
 class User(BaseModel):
     username: str = Field(...)
-    email: Optional[EmailStr] = ""
+    email: Optional[EmailStr]
     words: Optional[list] = []
     status: Optional[int] = 1
 
@@ -54,7 +54,7 @@ class UpdateUser(BaseModel):
     username: Optional[str] = Field(...)
     hashed_password: Optional[str]
     email: Optional[EmailStr] = ""
-    words: Optional[list]
+    words: Optional[list] = []
     status: Optional[int] = 1
 
     class Config:
