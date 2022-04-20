@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 from fastapi import Depends
 
-from model import TokenData, UserInDB, User, CustomException
+from model import Token, TokenData, UserInDB, User, CustomException
 from decrypt_data import decrypt_data
 from db_operation import db_query, db_insert
 from config import USER_DB
@@ -74,39 +74,36 @@ def create_access_token(username: str, expires_delta:  Optional[timedelta] = tim
     to_encode.update({"exp": expire}) # {'sub': 用户名, 'exp': datetime.datetime类型时间}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     # 返回Bearer令牌：访问令牌的字符串、令牌类型
-    return CustomException(code=200, data={"access_token": encoded_jwt, "token_type": "Bearer", "expire_minutes": ACCESS_TOKEN_EXPIRE_MINUTES }, msg="获取令牌成功，默认有效时间为%s分钟"%ACCESS_TOKEN_EXPIRE_MINUTES)
+    return CustomException(code=200, data=Token(access_token=encoded_jwt, token_type="Bearer", expire_minutes=ACCESS_TOKEN_EXPIRE_MINUTES), msg="获取令牌成功，默认有效时间为%s分钟"%ACCESS_TOKEN_EXPIRE_MINUTES)
 
 # 用户登录
 def login_user(db_name: str, username: str, password: str):
     user = get_user(db_name, username) # <class '__main__.UserInDB'>
     # 如果用户不存在或者密码错误
     if not user:
-        return CustomException(code=404, data={ "username": username }, msg="用户不存在")
+        return CustomException(code=404, data={ "username": username }, msg="用户名错误")
     if not verify_password(decrypt_data(password), user.hashed_password):
         return CustomException(code=401, data={ "username": username }, msg="密码错误")
     return create_access_token(user.username)
 
-
-# 获取当前用户
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+# 获取当前激活用户
+async def get_current_active_user(token: str = Depends(oauth2_scheme)):
+    # token解密
     try:
-        # token解密
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
-            raise CustomException(code=401, data={ "token": token }, msg="令牌不完整，信息缺失")
+            return CustomException(code=401, data={ "token": token }, msg="令牌不完整，信息缺失")
         token_data = TokenData(username=username)
     except JWTError:
-        raise CustomException(code=401, data={ "token": token }, msg="令牌有误，解密失败")
-    user = get_user(USER_DB, username=token_data.username)
-    if user is None:
-        raise CustomException(code=401, data={ "username": username }, msg="用户不存在")
-    return user
+        return CustomException(code=401, data={ "token": token }, msg="令牌有误，解密失败")
 
-# 获取当前激活用户
-async def get_current_active_user(current_user: User = Depends(get_current_user)):
-    if current_user.disabled:
-        raise CustomException(code=400, data=jsonable_encoder(current_user), msg="账户冻结")
+    current_user = get_user(USER_DB, username=token_data.username)
+    # 检查用户
+    if current_user is None:
+        return CustomException(code=401, data={ "username": username }, msg="用户不存在")
+    if current_user.status != 1:
+        return CustomException(code=400, data=jsonable_encoder(current_user), msg="账户异常，请联系管理员")
     return current_user
 
 # 文章分词

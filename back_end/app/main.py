@@ -3,14 +3,13 @@ from fastapi import Depends, FastAPI, Request
 
 # OAuth2PasswordRequestForm是一个类依赖项项，声明了如下的请求表单：username、password
 from fastapi.security import OAuth2PasswordRequestForm
-from model import Token, User, CustomException, Context, UserInfo
+from fastapi.responses import JSONResponse, Response
+from fastapi.middleware.cors import CORSMiddleware
+
+from model import User, CustomException, Context, UserInfo
 from dependencies import login_user, create_access_token, get_current_active_user, register_user, separate_words, count_words
 from config import USER_DB
-
-from fastapi.responses import JSONResponse, Response
 from response_info import status_code_list, default_msg_list
-
-from fastapi.middleware.cors import CORSMiddleware
 from db_operation import db_query
 
 app = FastAPI()
@@ -44,21 +43,17 @@ async def register(form_data: OAuth2PasswordRequestForm = Depends()):
     return register_user(USER_DB, form_data.username, form_data.password)
 
 # 用户登录
-@app.post("/user/login", response_description="获取令牌", response_model=Token)
+@app.post("/user/login", response_description="获取令牌")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     return login_user(USER_DB, form_data.username, form_data.password)
 
 # 查询用户本人的信息
-@app.get("/user/info", response_model=UserInfo)
+@app.get("/user/info", response_description="获取用户基本信息")
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
-    return {
-        "code": 200,
-        "data": current_user,
-        "msg": "ok"
-    }
+    return CustomException(code=200, data=dict(current_user), msg="ok")
 
 # 计算词频
-@app.post("/wordFrequency")
+@app.post("/wordFrequency", response_description="计算单词频率")
 async def cal_words_frequency(ctx: Context, current_user: User = Depends(get_current_active_user)):
     context = ctx.content
     words = separate_words(context)

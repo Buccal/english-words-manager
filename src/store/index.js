@@ -9,7 +9,7 @@ const store = createStore({
       token_type: '',
       user: {
         username: "",
-        emial: "",
+        email: "",
 
       }
     }

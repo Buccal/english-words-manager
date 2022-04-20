@@ -14,7 +14,7 @@ class CustomException(Exception):
 class Token(BaseModel):
     access_token: str
     token_type: str
-    token_time: int
+    expire_minutes: int
 
 # 令牌数据
 class TokenData(BaseModel):
