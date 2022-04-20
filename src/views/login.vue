@@ -115,11 +115,13 @@ const handleRegister = () => {
   register({
     username: form.username,
     password: encrypt(form.password)
-  }).then(() => {
-    ElMessage.success("注册成功")
-    data.activeName = "login"
-  }).catch(err=>{
-    ElMessage.error('注册失败，原因为：' + err.msg)
+  }).then(res => {
+    if(res.status === 1){
+      ElMessage.success("注册成功")
+      data.activeName = "login"
+    }else {
+      ElMessage.error('注册失败，原因为：' + res.msg)
+    }
   })
 }
 
@@ -127,16 +129,16 @@ const handleLogin = () => {
   login({
     username: form.username,
     password: encrypt(form.password)
-  }).then((res) => {
-    store.commit('$_setStorage', res.data)
-    setToken(res.data.access_token)
-    setTokenType(res.data.token_type)
-    ElMessage.success("登录成功")
-    router.push('/')
-  }).catch(err => {
-    console.log(err)
-    debugger
-    ElMessage.error('登录失败，原因为：' + err.msg)
+  }).then(res => {
+    if(res.status === 1){
+      store.commit('$_setStorage', res.data)
+      setToken(res.data.access_token)
+      setTokenType(res.data.token_type)
+      ElMessage.success("登录成功")
+      router.push('/')
+    }else {
+      ElMessage.error('登录失败，原因：' + res.msg)
+    }
   })
 }
 </script>

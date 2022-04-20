@@ -31,25 +31,38 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # oauth2_scheme-令牌对象; token: str = Depends(oauth2_scheme)后就是之前加密的令牌
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/user/login")
 
+# 获取用户
+def get_user(db_name: str, username: str):
+    user_dict = db_query(db_name, {"username": username})
+    # 判断用户是否存在
+    if not user_dict:
+        return None
+    # 创建用户模型
+    return UserInDB(**user_dict) # *表示元组，**表示字典
 
-# 验证密码: plain_password-普通密码; hashed_password-哈希密码
-def verify_password(plain_password: str, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-# 获取密码哈希
+# 获取密码哈希 - 用户注册时用户存储密码
 def get_password_hash(password: str):
     # 将JSON对象编码为密集且没有空格的长字符串，相同密码可以转成不同的字符串，但验证都能通过
     return pwd_context.hash(password)
 
-# 验证用户，成功返回用户信息
-def authenticate_user(db_name: str, username: str, password: str):
-    user = get_user(db_name, username)
-    # 如果用户不存在或者密码错误
-    if not user:
-        raise CustomException(code=404, data={ "username": username }, msg="用户不存在")
-    if not verify_password(decrypt_data(password), user.hashed_password):
-        raise CustomException(code=401, data={ "username": username }, msg="密码错误")
-    return user # <class '__main__.UserInDB'>
+# 用户注册
+def register_user(db_name: str, username: str, password:str):
+    existed_user = get_user(db_name, username)
+    if not existed_user:
+        db_insert(db_name, {
+            "username": username,
+            "hashed_password": get_password_hash(decrypt_data(password)),
+            "email": None,
+            "words": [],
+            "status": "1",
+        }, True)
+    else:
+        return CustomException(code=409, data={ "username": username }, msg="用户已存在")
+    return CustomException(code=201, data={ "username": username }, msg="用户创建成功")
+
+# 验证密码: plain_password-普通密码; hashed_password-哈希密码
+def verify_password(plain_password: str, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
 
 # 创建访问令牌
 def create_access_token(username: str, expires_delta:  Optional[timedelta] = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)):
@@ -61,7 +74,18 @@ def create_access_token(username: str, expires_delta:  Optional[timedelta] = tim
     to_encode.update({"exp": expire}) # {'sub': 用户名, 'exp': datetime.datetime类型时间}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     # 返回Bearer令牌：访问令牌的字符串、令牌类型
-    raise CustomException(code=200, data={"access_token": encoded_jwt, "token_type": "Bearer", }, msg="获取令牌成功，默认有效时间为%s分钟"%ACCESS_TOKEN_EXPIRE_MINUTES)
+    return CustomException(code=200, data={"access_token": encoded_jwt, "token_type": "Bearer", "expire_minutes": ACCESS_TOKEN_EXPIRE_MINUTES }, msg="获取令牌成功，默认有效时间为%s分钟"%ACCESS_TOKEN_EXPIRE_MINUTES)
+
+# 用户登录
+def login_user(db_name: str, username: str, password: str):
+    user = get_user(db_name, username) # <class '__main__.UserInDB'>
+    # 如果用户不存在或者密码错误
+    if not user:
+        return CustomException(code=404, data={ "username": username }, msg="用户不存在")
+    if not verify_password(decrypt_data(password), user.hashed_password):
+        return CustomException(code=401, data={ "username": username }, msg="密码错误")
+    return create_access_token(user.username)
+
 
 # 获取当前用户
 async def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -84,30 +108,6 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
     if current_user.disabled:
         raise CustomException(code=400, data=jsonable_encoder(current_user), msg="账户冻结")
     return current_user
-
-# 获取用户
-def get_user(db_name: str, username: str):
-    user_dict = db_query(db_name, {"username": username})
-    # 判断用户是否存在
-    if not user_dict:
-        return None
-    # 创建用户模型
-    return UserInDB(**user_dict) # *表示元组，**表示字典
-
-# 用户注册
-def register_user(db_name: str, username: str, password:str):
-    existed_user = get_user(db_name, username)
-    if not existed_user:
-        db_insert(db_name, {
-            "username": username,
-            "hashed_password": get_password_hash(decrypt_data(password)),
-            "email": None,
-            "words": [],
-            "status": "1",
-        }, True)
-    else:
-        raise CustomException(code=409, data={ "username": username }, msg="用户已存在")
-    raise CustomException(code=201, data={ "username": username }, msg="用户创建成功")
 
 # 文章分词
 def separate_words(context: str):

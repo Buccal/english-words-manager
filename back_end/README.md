@@ -94,4 +94,34 @@ class Hoo(BaseModel):
 print(Hoo(price = -50)) #error
 print(Hoo(name = "popular books")) #error
 ```
+### 接口返回方式
+1. 直接return，不管返回code时多少，都会被axios以onFulfilled捕获
+```python
+return {
+   "code": 404,
+   "data": None,
+   "msg": "dddddd"
+}
+```
+
+```js
+axios.interceptors.response.use(res=>{}, err=>{
+  // 在这里被捕获
+})
+```
+
+2. raise Exception
+    - code以2开头：被axios以onFulfilled捕获
+    - code以其他数字开头：被axios以onRejected捕获
+```python
+raise CustomException(code=201, data=None, msg="dddddd")
+```
+
+```js
+axios.interceptors.response.use(res=>{
+  // 在这里被捕获
+}, err=>{})
+```
+
+
 

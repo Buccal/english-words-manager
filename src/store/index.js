@@ -40,6 +40,9 @@ const store = createStore({
       })
     },
     Logout(){
+      // 删除已经失效或过期的token（不删除也可以，因为登录后覆盖）
+      localStorage.clear()
+      // ...
 
     }
   }

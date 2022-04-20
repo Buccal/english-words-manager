@@ -6,6 +6,7 @@ import errorCode from '@/utils/errorCode'
 import store from '@/store/index'
 
 import { getToken, getTokenType } from '@/utils/auth'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 设置默认请求头
 axios.defaults.headers['Content-Type'] = 'application/json'
@@ -65,38 +66,51 @@ server.interceptors.request.use(
 
 // 响应拦截器
 server.interceptors.response.use(function (res) {
-  console.log("hahahaha")
-  debugger
   const rtn = res.data
-
-  rtn.code = res.status
-
   // 映射错误信息
-  rtn.msg = rtn.msg || res.data.msg || errorCode[rtn.code] || errorCode.default || res.statusText
+  rtn.msg = rtn.msg || res.data.msg || errorCode[rtn.code] || errorCode.default
 
-  if (rtn.code >= 400) {
-    // 删除已经失效或过期的token（不删除也可以，因为登录后覆盖）
-    localStorage.clear()
-    this.$router.replace({
-      // 跳转到登录页重新获取token
-      path: '/login',
-      query: {
-        // 登陆后回到当前页面
-        redirect: this.$router.currentRoute.fullPath
+  if (rtn.code === 401) {
+    ElMessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
+        confirmButtonText: '重新登录',
+        cancelButtonText: '取消',
+        type: 'warning'
       }
-    }).then(() => {})
+    ).then(() => {
+      store.dispatch('Logout').then(() => {
+        this.$router.replace({
+          // 跳转到登录页重新获取token
+          path: '/login',
+          query: {
+            // 登陆后回到当前页面
+            redirect: this.$router.currentRoute.fullPath
+          }
+        }).then(() => {})
+      })
+    }).catch(() => { });
   } else if (!/^2/.test(rtn.code)) {
-    return Promise.reject(new Error(rtn.msg))
+    rtn.status = 0
+    // return
+    return rtn
+  }else{
+    rtn.status = 1
+    return rtn
   }
-  return rtn
 }, function (error) {
-  if (error.message === 'Network Error') {
-    error.message = '后端接口连接异常'
-  } else if (error.message.includes('timeout')) {
-    error.message = '系统接口请求超时'
-  } else if (error.message.includes('Request failed with status code')) {
-    error.message = '系统接口' + error.message.substr(error.message.length - 3) + '异常'
+  let { message } = error.toJSON();
+  if (message === 'Network Error') {
+    message = '后端接口连接异常'
+  } else if (message.includes('timeout')) {
+    message = '系统接口请求超时'
+  } else if (message.includes('Request failed with status code')) {
+    message = '系统接口' + message.substr(message.length - 3) + '异常'
   }
+  if(!message) message = "系统未知错误，请反馈给管理员"
+  ElMessage({
+    message: message,
+    type: 'error',
+    duration: 5 * 1000
+  })
   return Promise.reject(error)
 })
 
