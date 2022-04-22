@@ -2,9 +2,9 @@ import store from '@/store/index'
 
 const permissionList = {
   visitor: [],
-  user: ['frequency-operator', 'words-manager', 'user-info'],
-  vip: ['frequency-operator', 'words-manager', 'user-info'],
-  admin: ['frequency-operator', 'words-manager', 'user-info']
+  user: ['frequency-management', 'words-manager', 'user-info'],
+  vip: ['frequency-management', 'words-manager', 'user-info'],
+  admin: ['frequency-management', 'words-manager', 'user-info']
 }
 
 function changeHasPermission (el, binding) {

@@ -183,7 +183,6 @@ const importWords = (data) => {
     return
   }
   add({
-    user_id: store.state.user_id,
     words: data
   }).then((res) => {
     if (res.code === 200) {
@@ -194,7 +193,7 @@ const importWords = (data) => {
 
 // 按字母分组
 const filterWords = (wordsArray, filterStr) => {
-  return wordsArray.filter((item) => item.Group === filterStr)
+  return wordsArray.filter((item) => item.group === filterStr)
 }
 
 // 去重
@@ -203,6 +202,7 @@ const filterWords = (wordsArray, filterStr) => {
 // };
 
 const init = () => {
+
   data.activeGroups = props.defaultGroup.split('')
   // data.uniqueWords = uniqueArray(props.words);
   data.wordsGroupList = []

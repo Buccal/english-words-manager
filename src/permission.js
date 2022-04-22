@@ -1,24 +1,31 @@
 import { ElMessageBox } from 'element-plus'
 import router from './router'
 import store from './store'
-import { removeToken, removeTokenType } from "@/utils/auth";
 
 const whiteList = ['/known-words-manager', '/template-words/primary', '/template-words/middle', '/template-words/high', '/logout']
 
 router.beforeEach((to, from, next) => {
   if (store.getters.loginStatus) {
     if (to.path === '/login') {
-      next({ path: '/' })
+      next()
     } else {
+      /*
+      * 判断是否有权限信息
+      * 没有权限的请求权限信息，有权限的判断访问地址是否在权限内
+      * 若无权限访问，执行登出，重定向到登录页
+      */
       // 获取用户信息，并测试令牌是否过期
-      store.dispatch('GetInfo').then(() => {
+
+      // 若无用户信息，请求用户信息
+      if(!store.state.user.username){
+        store.dispatch('GetInfo').then(() => {
+          next()
+        }).catch(() => {
+          store.commit('$_removeStorage')
+        })
+      }else{
         next()
-      }).catch(() => {
-        store.commit('$_removeStorage')
-        removeToken()
-        removeTokenType()
-        next({ path: '/login' })
-      })
+      }
     }
   } else {
     if (whiteList.indexOf(to.path) === -1) {

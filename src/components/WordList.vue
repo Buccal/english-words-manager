@@ -14,7 +14,7 @@
           clearable
         />
       </el-form-item>
-      <el-form-item v-hasPermi="'frequency-operater'">
+      <el-form-item v-hasPermi="'frequency-management'">
         <el-button size="small" v-if="data.buttonSetting.newWordBook">
           <el-icon class="el-icon--left">
             <Collection />
@@ -76,7 +76,7 @@
       <el-table-column align="center" type="selection" width="55" />
       <el-table-column align="center" label="序号">
         <template v-slot="scope">
-          {{scope.$index+1}}
+          {{ (currentPage-1)*100 + scope.$index+1 }}
         </template>
       </el-table-column>
       <el-table-column align="center"
@@ -92,20 +92,21 @@
       ></el-table-column>
       <el-table-column align="center"
         label="是否为生词"
-        prop="isNew"
+        prop="isKnown"
         :filters="[
-          { text: '生词', value: true },
-          { text: '熟词', value: false },
+          { text: '熟词', value: true },
+          { text: '生词', value: false },
         ]"
         :filter-method="filterNew"
         filter-placement="bottom-end"
-        v-hasPermi="'frequency-operater'"
+        v-hasPermi="'frequency-management'"
       >
         <template #default="scope">
           <el-switch
-            v-model="scope.row.isNew"
+            v-model="scope.row.isKnown"
             active-color="#13ce66"
-            inactive-color="#ff4949"
+            inactive-color="#ccc"
+            size="small"
           >
           </el-switch>
         </template>
@@ -178,12 +179,12 @@ const total = computed(() => {
 })
 
 const filterNew = (value, row) => {
-  return row.isNew === value
+  return row.isKnown === value
 }
 
 const saveKnownWords = () => {
   const words = data.tableData.map((item) => {
-    if (!item.isNew) {
+    if (!item.isKnown) {
       return item.word
     }
   })
@@ -192,7 +193,6 @@ const saveKnownWords = () => {
     return
   }
   add({
-    user_id: store.state.user_id,
     words: words
   }).then((res) => {
     if (res.code === 200) {
@@ -212,16 +212,12 @@ onMounted(() => {
 })
 
 const search = () => {
-  if (!form.search) {
-    alert('请输入单词进行搜索')
-    return
-  }
   data.showData = data.tableData.filter(item => item.word.indexOf(form.search) !== -1)
 }
 
 const setAllKnown = () => {
   data.showData.map((item) => {
-    item.isNew = false
+    item.isKnown = true
     return item
   })
 }
@@ -269,4 +265,9 @@ const init = () => {
 /deep/ .el-table .el-table__cell {
   padding: 0;
 }
+
+/deep/ .el-switch__core {
+  transform: scale(0.7);
+}
+
 </style>

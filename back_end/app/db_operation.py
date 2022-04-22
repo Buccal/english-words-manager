@@ -23,8 +23,8 @@ def db_query(
         db_name: str, #表名
         cond: dict = None, #条件
         keys: dict = None, #筛选字段，返回值为1
-        size: int = 10, #每页条数
-        no: int = 0, #页数
+        size: int = 10, #每页条数, 0表示无限
+        no: int = 0, #页数，0表示不跳过
     ):
     collection = db[db_name]
     result = collection.find(cond, keys).limit(size).skip(size*no)

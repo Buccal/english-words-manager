@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import { getToken } from "@/utils/auth";
 import { getUserInfo } from "@/api";
+import { removeToken, removeTokenType } from '@/utils/auth'
 
 const store = createStore({
   state () {
@@ -10,7 +11,8 @@ const store = createStore({
       user: {
         username: "",
         email: "",
-
+        words: [],
+        status: null,
       }
     }
   },
@@ -26,15 +28,30 @@ const store = createStore({
     },
     $_removeStorage (state) {
       state.access_token = ''
-    }
+      state.token_type = ''
+      state.user = {
+        username: "",
+        email: "",
+        words: [],
+        status: null,
+      }
+      removeToken()
+      removeTokenType()
+      window.location.reload()
+    },
+    $_setUserInfo (state, payload) {
+      state.user = Object.assign(state.user, payload)
+    },
   },
   actions: {
     // 获取用户信息
     GetInfo() {
       return new Promise((resolve, reject) => {
         getUserInfo().then(res => {
+          this.commit('$_setUserInfo', res.data)
           resolve(res)
         }).catch(err => {
+
           reject(err)
         })
       })

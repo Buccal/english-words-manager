@@ -7,8 +7,8 @@ from fastapi.responses import JSONResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from model import User, CustomException, Context, UserInfo
-from dependencies import login_user, create_access_token, get_current_active_user, register_user, separate_words, count_words
-from config import USER_DB
+from dependencies import login_user, create_access_token, get_current_active_user, register_user, separate_words, count_words, get_user_template_words
+from config import USER_DB, WORD_DB
 from response_info import status_code_list, default_msg_list
 from db_operation import db_query
 
@@ -57,9 +57,19 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 async def cal_words_frequency(ctx: Context, current_user: User = Depends(get_current_active_user)):
     context = ctx.content
     words = separate_words(context)
-    exclude = db_query("USER_WORDS", {"username": current_user.username}) or []
+    exclude = current_user.words
     frequencyList = count_words(words, exclude)
-    raise CustomException(code=200, data=frequencyList)
+    return CustomException(code=200, data=frequencyList)
+
+# 获取模板单词
+@app.get("/templateWords/{level}")
+async def get_template_words(level: str, current_user: User = Depends(get_current_active_user)):
+    return get_user_template_words(WORD_DB, level, current_user.words)
+
+# 添加已熟知单词
+@app.post("/user/addWord")
+async def add_user_word(data: Words, current_user: User = Depends(get_current_active_user)):
+
 
 # 测试
 @app.get("/test")

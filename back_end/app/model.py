@@ -16,10 +16,6 @@ class Token(BaseModel):
     token_type: str
     expire_minutes: int
 
-# 令牌数据
-class TokenData(BaseModel):
-    username: Optional[str] = None
-
 # 用户基础模型：响应
 class User(BaseModel):
     username: str = Field(...)
@@ -78,15 +74,5 @@ class Context(BaseModel):
     userId: Optional[str]
     content: str
 
-    class Config:
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
-        schema_extra = {
-            "example": {
-                "content": "alice",
-                "hashed_password": "NWewxd6IvYXCTmHKNPzpbkjJdVXQ/pW7H2GaZwSQCTiXYUGK7uhMUCYVCl4tPaxOVR7XEZ2n0MjIe1GyHvRRUoLmcYUFVadYc2+eM5CmPIfzl5P5RnymgJpCPolT1P3jiN0O/ruatofIwQfBOSC+k+mfP5x/i2DmwJH4ZfepXes=",
-                "email": "alice@example.com",
-                "words": "['apple', 'good', 'box']",
-                "status": "1",
-            }
-        }
+class Words(BaseModel):
+    words: list

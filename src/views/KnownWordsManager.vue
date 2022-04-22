@@ -11,7 +11,6 @@
 import { reactive, onMounted } from 'vue'
 import store from '@/store/index'
 import WordList from '../components/WordList'
-import { getKnownWords } from '@/api'
 
 const data = reactive({
   wordsList: [],
@@ -22,16 +21,14 @@ const data = reactive({
 })
 
 onMounted(() => {
-  getKnownWords(store.state.user_id).then((res) => {
-    if (res.code === 200) {
-      data.wordsList = res.data.map((item) => {
-        const temp = {}
-        temp.word = item
-        temp.newFlag = false
-        return temp
-      })
-    }
+  let temp = [];
+  store.state.user.words.forEach(item => {
+    temp.push({
+      word: item,
+      isKnown: true
+    })
   })
+  data.wordsList = temp
 })
 </script>
 

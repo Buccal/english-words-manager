@@ -104,17 +104,6 @@ export function add (data) {
   })
 }
 
-/**
- * 获取熟词列表
- * @param {String} userId
- */
-export function getKnownWords (userId) {
-  return request({
-    url: '/user_words/known_list/' + userId,
-    method: 'get'
-  })
-}
-
 // 移除熟词（Todo）
 export function remove (data) {
   return request({
@@ -144,9 +133,9 @@ export function getBooks (userId) {
 }
 
 // 获取模板单词列表
-export function getTemplateWords (userId, level) {
+export function getTemplateWords (level) {
   return request({
-    url: '/user_words/template_list/' + userId + '/' + level,
+    url: '/templateWords/' + level,
     method: 'get'
   })
 }

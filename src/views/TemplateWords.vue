@@ -27,10 +27,8 @@ const data = reactive({
 })
 
 onMounted(() => {
-  getTemplateWords(store.state.user_id, props.level).then((res) => {
-    if (res.code === 200) {
-      data.wordsList = res.data
-    }
+  getTemplateWords(props.level).then((res) => {
+    data.wordsList = res.data.data
   })
 })
 </script>
